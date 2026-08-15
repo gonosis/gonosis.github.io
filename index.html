@@ -3,198 +3,345 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Suriyapakorn Ngamsapsiri — 3D Visualization Artist</title>
+<title>Suriyapakorn Ngamsapsiri — 3D Visualization Artist (Redesign Demo)</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pannellum/2.5.6/pannellum.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pannellum/2.5.6/pannellum.js"></script>
 <style>
   :root{
-    --bg:#0e0e10;
-    --bg-alt:#161618;
-    --card:#1c1c1f;
-    --text:#eef0f2;
-    --muted:#9aa0a6;
-    --accent:#e8734a;
-    --accent-soft:#3a2822;
-    --border:#2a2a2e;
+    --bg:#faf7f2;
+    --bg-alt:#f2ede4;
+    --card:#ffffff;
+    --text:#2b2622;
+    --muted:#7a7168;
+    --accent:#cc6a3c;
+    --accent-dark:#a8532c;
+    --accent-soft:#f2e0d3;
+    --border:#e8e0d4;
+    --serif:'Georgia','Times New Roman',serif;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   html{scroll-behavior:smooth;}
   body{
     background:var(--bg);
     color:var(--text);
-    font-family:'Helvetica Neue',Arial,sans-serif;
-    line-height:1.6;
+    font-family:var(--sans);
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
   }
-  a{color:var(--accent);text-decoration:none;}
+  a{color:var(--accent-dark);text-decoration:none;}
   a:hover{text-decoration:underline;}
-  .wrap{max-width:1000px;margin:0 auto;padding:0 24px;}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 28px;}
+  .demo-banner{
+    background:var(--accent-dark);color:#fff;text-align:center;
+    font-size:0.85rem;padding:10px 16px;letter-spacing:0.3px;
+  }
 
   header{
-    position:sticky;top:0;z-index:10;
-    background:rgba(14,14,16,0.9);
-    backdrop-filter:blur(8px);
+    position:sticky;top:0;z-index:20;
+    background:rgba(250,247,242,0.92);
+    backdrop-filter:blur(10px);
     border-bottom:1px solid var(--border);
   }
   nav{
     display:flex;justify-content:space-between;align-items:center;
-    padding:16px 24px;max-width:1000px;margin:0 auto;
+    padding:20px 28px;max-width:1080px;margin:0 auto;
   }
-  nav .logo{font-weight:700;letter-spacing:1px;font-size:14px;}
-  nav ul{display:flex;gap:24px;list-style:none;}
-  nav ul li a{color:var(--muted);font-size:14px;}
+  nav .logo{font-family:var(--serif);font-weight:700;font-size:1.2rem;letter-spacing:0.5px;}
+  nav ul{display:flex;gap:30px;list-style:none;}
+  nav ul li a{color:var(--muted);font-size:14px;font-weight:500;}
   nav ul li a:hover{color:var(--text);text-decoration:none;}
 
+  .side-rail{
+    position:fixed;right:26px;top:50%;transform:translateY(-50%);z-index:30;
+    display:flex;flex-direction:column;gap:16px;align-items:flex-end;
+  }
+  .side-rail a{
+    display:flex;align-items:center;gap:10px;color:var(--muted);font-size:0.7rem;
+    letter-spacing:0.5px;text-transform:uppercase;font-weight:600;
+  }
+  .side-rail a:hover{color:var(--text);text-decoration:none;}
+  .side-rail a .dot{
+    width:11px;height:11px;flex:0 0 auto;
+    background:var(--card);border:1.5px solid var(--accent-dark);
+    clip-path:polygon(30% 0,100% 0,100% 70%,70% 100%,0 100%,0 30%);
+    transition:background .2s ease,transform .2s ease;
+  }
+  .side-rail a.active .dot{background:var(--accent-dark);transform:scale(1.15);}
+  .side-rail a.active{color:var(--text);}
+  .side-rail .label{
+    white-space:nowrap;
+  }
+  @media(max-width:1180px){ .side-rail{display:none;} }
+
   .hero{
-    padding:100px 24px 80px;
+    padding:120px 28px 100px;
     text-align:center;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero::before{
+    content:"";position:absolute;inset:0;
     background:
-      radial-gradient(circle at 20% 20%, var(--accent-soft), transparent 45%),
-      radial-gradient(circle at 80% 30%, #22384a, transparent 40%);
+      radial-gradient(circle at 15% 25%, var(--accent-soft) 0%, transparent 45%),
+      radial-gradient(circle at 85% 15%, #e4ece0 0%, transparent 40%);
+    z-index:-1;
   }
-  .avatar{
-    width:120px;height:120px;border-radius:50%;
-    margin:0 auto 24px;
-    background:linear-gradient(135deg,var(--accent),#c85a33);
-    display:flex;align-items:center;justify-content:center;
-    font-size:40px;font-weight:700;color:#fff;
-    border:3px solid var(--border);
+  .eyebrow{
+    display:inline-block;color:var(--accent-dark);font-size:0.75rem;
+    letter-spacing:3px;text-transform:uppercase;font-weight:700;margin-bottom:22px;
   }
-  .hero h1{font-size:2.4rem;letter-spacing:1px;margin-bottom:6px;}
-  .hero .role{color:var(--accent);font-size:1rem;letter-spacing:3px;text-transform:uppercase;margin-bottom:24px;}
-  .hero p.summary{max-width:640px;margin:0 auto 32px;color:var(--muted);font-size:1.05rem;}
+  .hero h1{
+    font-family:var(--serif);
+    font-size:3.2rem;font-weight:400;letter-spacing:-0.5px;
+    margin-bottom:10px;color:#241f1b;
+  }
+  .hero .role{color:var(--muted);font-size:1.15rem;margin-bottom:28px;}
+  .hero p.summary{max-width:600px;margin:0 auto 36px;color:var(--muted);font-size:1.05rem;}
   .hero .cta{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
   .btn{
-    display:inline-block;padding:12px 26px;border-radius:30px;
-    font-size:14px;letter-spacing:0.5px;font-weight:600;
+    display:inline-block;padding:13px 30px;border-radius:4px;
+    font-size:14px;letter-spacing:0.3px;font-weight:600;transition:all .2s;
   }
-  .btn.primary{background:var(--accent);color:#1a1a1a;}
-  .btn.primary:hover{background:#f08659;text-decoration:none;}
-  .btn.outline{border:1px solid var(--border);color:var(--text);}
-  .btn.outline:hover{border-color:var(--accent);text-decoration:none;}
+  .btn.primary{background:var(--accent);color:#fff;}
+  .btn.primary:hover{background:var(--accent-dark);text-decoration:none;}
+  .btn.outline{border:1px solid #d8cfc2;color:var(--text);}
+  .btn.outline:hover{border-color:var(--accent);text-decoration:none;background:var(--card);}
 
-  section{padding:70px 24px;border-top:1px solid var(--border);}
-  section h2{
-    font-size:1.6rem;margin-bottom:36px;
-    display:flex;align-items:center;gap:12px;
-  }
-  section h2::after{
-    content:"";flex:1;height:1px;background:var(--border);
-  }
+  section{padding:80px 28px;}
+  section.alt{background:var(--bg-alt);}
+  .section-head{margin-bottom:44px;max-width:600px;}
+  .section-head .kicker{color:var(--accent-dark);font-size:0.75rem;letter-spacing:2.5px;text-transform:uppercase;font-weight:700;margin-bottom:10px;}
+  .section-head h2{font-family:var(--serif);font-size:2rem;font-weight:400;color:#241f1b;}
+  .section-head p{color:var(--muted);margin-top:10px;font-size:1rem;}
 
   /* Skills */
-  .skill-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:28px;}
-  .skill-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px;}
-  .skill-card h3{font-size:0.85rem;letter-spacing:1px;color:var(--accent);text-transform:uppercase;margin-bottom:14px;}
-  .skill-card ul{list-style:none;color:var(--muted);font-size:0.95rem;}
-  .skill-card ul li{padding:4px 0;}
+  .skill-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:24px;}
+  .skill-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:26px;}
+  .skill-card h3{font-size:0.75rem;letter-spacing:1.5px;color:var(--accent-dark);text-transform:uppercase;margin-bottom:16px;font-weight:700;}
+  .skill-card ul{list-style:none;color:var(--text);font-size:0.95rem;}
+  .skill-card ul li{padding:5px 0;border-bottom:1px solid var(--bg-alt);}
+  .skill-card ul li:last-child{border-bottom:none;}
 
-  /* Experience timeline */
-  .timeline{position:relative;padding-left:28px;border-left:2px solid var(--border);}
-  .job{margin-bottom:44px;position:relative;}
+  /* Timeline */
+  .timeline{position:relative;padding-left:32px;border-left:2px solid var(--border);}
+  .job{margin-bottom:48px;position:relative;}
   .job::before{
-    content:"";position:absolute;left:-35px;top:4px;
-    width:12px;height:12px;border-radius:50%;
+    content:"";position:absolute;left:-39px;top:5px;
+    width:14px;height:14px;border-radius:50%;
     background:var(--accent);border:3px solid var(--bg);
   }
-  .job .period{color:var(--accent);font-size:0.85rem;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
-  .job h3{font-size:1.15rem;margin-bottom:10px;}
+  .job .period{color:var(--accent-dark);font-size:0.8rem;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;font-weight:700;}
+  .job h3{font-family:var(--serif);font-size:1.3rem;margin-bottom:12px;font-weight:400;}
   .job ul{color:var(--muted);padding-left:20px;font-size:0.95rem;}
   .job ul li{margin-bottom:6px;}
-  .job .tag-list{margin-top:10px;color:var(--muted);font-size:0.88rem;}
-  .job .tag-list b{color:var(--text);}
-
-  /* Portfolio */
-  .portfolio-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;}
-  .pf-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;transition:border-color .2s;}
-  .pf-card:hover{border-color:var(--accent);}
-  .pf-card h4{font-size:0.8rem;text-transform:uppercase;letter-spacing:1px;color:var(--accent);margin-bottom:12px;}
-  .pf-card ol,.pf-card p{color:var(--muted);font-size:0.95rem;}
-  .pf-card a{display:block;margin-bottom:6px;word-break:break-word;}
 
   /* Project gallery */
-  .project-block{margin-bottom:56px;}
-  .project-header{margin-bottom:18px;}
-  .project-header h3{font-size:1.2rem;margin-bottom:4px;}
+  .project-block{margin-bottom:64px;padding-top:40px;border-top:1px solid var(--border);}
+  .project-block:first-child{padding-top:0;border-top:none;}
+  .project-header{margin-bottom:20px;}
+  .project-header h3{font-family:var(--serif);font-size:1.4rem;font-weight:400;margin-bottom:4px;}
   .project-header span{color:var(--muted);font-size:0.85rem;letter-spacing:0.5px;text-transform:uppercase;}
-  .thumb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;}
-  .thumb{
-    position:relative;border-radius:10px;overflow:hidden;
-    border:1px solid var(--border);background:var(--card);
-    cursor:pointer;aspect-ratio:4/3;
+  .carousel-wrap{position:relative;}
+  .thumb-grid{
+    display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;
+    padding-bottom:10px;scrollbar-width:thin;scrollbar-color:var(--accent) var(--bg-alt);
   }
-  .thumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s ease;}
+  .thumb-grid::-webkit-scrollbar{height:6px;}
+  .thumb-grid::-webkit-scrollbar-thumb{background:#d8cfc2;border-radius:6px;}
+  .thumb-grid::-webkit-scrollbar-track{background:transparent;}
+  .thumb{
+    position:relative;border-radius:8px;overflow:hidden;
+    border:1px solid var(--border);background:var(--card);
+    cursor:pointer;flex:0 0 260px;aspect-ratio:4/3;scroll-snap-align:start;
+  }
+  .thumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s ease;}
   .thumb:hover img{transform:scale(1.06);}
   .thumb .cap{
     position:absolute;left:0;right:0;bottom:0;
-    padding:8px 10px;font-size:0.78rem;color:#fff;
-    background:linear-gradient(to top, rgba(0,0,0,0.75), transparent);
+    padding:10px 12px;font-size:0.78rem;color:#fff;
+    background:linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+  }
+  .carousel-arrow{
+    position:absolute;top:50%;transform:translateY(-50%);z-index:3;
+    width:38px;height:38px;border-radius:50%;
+    background:#fff;border:1px solid var(--border);box-shadow:0 4px 14px rgba(60,40,20,0.12);
+    display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text);
+  }
+  .carousel-arrow:hover{background:var(--accent-soft);}
+  .carousel-prev{left:-8px;}
+  .carousel-next{right:-8px;}
+  @media(max-width:640px){ .carousel-arrow{display:none;} }
+  .thumb-grid.thumb-grid-featured{justify-content:center;}
+  .thumb-grid.thumb-grid-featured .thumb{flex:0 0 min(640px,90%);aspect-ratio:16/9;}
+
+  /* YouTube playlist */
+  .yt-wrap{
+    background:var(--card);border:1px solid var(--border);border-radius:12px;
+    overflow:hidden;box-shadow:0 8px 30px rgba(60,40,20,0.06);
+  }
+  .yt-wrap iframe{width:100%;aspect-ratio:16/9;border:0;display:block;}
+  .yt-wrap.yt-center{max-width:760px;margin:0 auto;}
+
+  /* 360 gallery cards */
+  .pano-grid{
+    display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;
+    padding-bottom:10px;scrollbar-width:thin;scrollbar-color:var(--accent) var(--bg-alt);
+  }
+  .pano-grid::-webkit-scrollbar{height:6px;}
+  .pano-grid::-webkit-scrollbar-thumb{background:#d8cfc2;border-radius:6px;}
+  .pano-grid::-webkit-scrollbar-track{background:transparent;}
+  .pano-card{
+    position:relative;border-radius:10px;overflow:hidden;cursor:pointer;
+    flex:0 0 280px;aspect-ratio:16/9;border:1px solid var(--border);scroll-snap-align:start;
+  }
+  .pano-card img{width:100%;height:100%;object-fit:cover;transition:transform .4s;}
+  .pano-card:hover img{transform:scale(1.06);}
+  .pano-card .badge{
+    position:absolute;top:10px;right:10px;background:rgba(0,0,0,0.55);
+    color:#fff;font-size:0.7rem;padding:4px 10px;border-radius:20px;
+    display:flex;align-items:center;gap:5px;letter-spacing:0.5px;
+  }
+  .pano-card .cap{
+    position:absolute;left:0;right:0;bottom:0;padding:12px 14px;color:#fff;
+    background:linear-gradient(to top, rgba(0,0,0,0.75), transparent);font-size:0.85rem;font-weight:600;
+  }
+  .pano-house{margin-bottom:6px;}
+  .pano-floor-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 12px;}
+  .pano-floor-tab{
+    font-family:var(--serif);font-size:0.82rem;color:var(--muted);
+    background:transparent;border:1px solid var(--border);border-radius:20px;
+    padding:5px 16px;cursor:pointer;transition:all .2s;
+  }
+  .pano-floor-tab:hover{background:var(--accent-soft);color:var(--text);}
+  .pano-floor-tab.active{background:var(--accent-dark);border-color:var(--accent-dark);color:#fff;}
+
+  /* Pano viewer modal */
+  .pano-modal{
+    display:none;position:fixed;inset:0;z-index:200;background:#0b0b0c;
+  }
+  .pano-modal.open{display:block;}
+  #panoViewer{width:100%;height:100%;}
+  .pano-modal .pv-top{
+    position:absolute;top:0;left:0;right:0;z-index:5;
+    display:flex;justify-content:space-between;align-items:center;
+    padding:16px 22px;background:linear-gradient(to bottom, rgba(0,0,0,0.65), transparent);
+    color:#fff;pointer-events:none;
+  }
+  .pano-modal .pv-top *{pointer-events:auto;}
+  .pv-title{font-size:0.95rem;font-weight:600;}
+  .pv-sub{font-size:0.78rem;color:#c9c9c9;margin-top:2px;}
+  .pv-actions{display:flex;gap:10px;}
+  .pv-btn{
+    background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);
+    color:#fff;border-radius:6px;padding:8px 14px;font-size:0.8rem;cursor:pointer;
+    display:flex;align-items:center;gap:6px;font-weight:600;
+  }
+  .pv-btn:hover{background:rgba(255,255,255,0.22);}
+  .pv-close{font-size:22px;line-height:1;padding:6px 12px;}
+  .pv-nav{
+    position:absolute;top:50%;transform:translateY(-50%);z-index:5;
+    width:46px;height:46px;border-radius:50%;
+    background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.25);
+    color:#fff;font-size:20px;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .pv-nav:hover{background:rgba(0,0,0,0.65);}
+  .pv-prev{left:20px;}
+  .pv-next{right:20px;}
+  .pv-dots{
+    position:absolute;bottom:22px;left:0;right:0;z-index:5;
+    display:flex;justify-content:center;gap:8px;
+  }
+  .pv-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.35);cursor:pointer;}
+  .pv-dot.active{background:#fff;}
+  .pv-hint{
+    position:absolute;bottom:50px;left:0;right:0;text-align:center;color:rgba(255,255,255,0.6);
+    font-size:0.75rem;letter-spacing:0.5px;pointer-events:none;
   }
 
-  /* Lightbox */
-  .lightbox{
-    display:none;position:fixed;inset:0;z-index:100;
-    background:rgba(8,8,9,0.94);
-    align-items:center;justify-content:center;
-    padding:30px;flex-direction:column;
+  /* Photo lightbox */
+  .photo-lightbox{
+    display:none;position:fixed;inset:0;z-index:150;
+    background:rgba(15,12,10,0.94);
+    align-items:center;justify-content:center;padding:40px;
   }
-  .lightbox.open{display:flex;}
-  .lightbox img{max-width:90vw;max-height:80vh;border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,0.6);}
-  .lightbox .lb-cap{color:var(--muted);margin-top:14px;font-size:0.9rem;text-align:center;}
-  .lightbox .lb-close{
-    position:absolute;top:20px;right:28px;color:#fff;font-size:28px;
-    cursor:pointer;line-height:1;
+  .photo-lightbox.open{display:flex;}
+  .photo-lightbox img{max-width:88vw;max-height:80vh;border-radius:6px;box-shadow:0 20px 60px rgba(0,0,0,0.5);}
+  .photo-lightbox .pl-cap{color:#e7e0d6;margin-top:16px;font-size:0.9rem;text-align:center;}
+  .photo-lightbox .pl-close{
+    position:absolute;top:22px;right:30px;color:#fff;font-size:30px;
+    cursor:pointer;line-height:1;background:rgba(255,255,255,0.1);
+    width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;
   }
-  .lightbox .lb-nav{
+  .photo-lightbox .pl-close:hover{background:rgba(255,255,255,0.2);}
+  .photo-lightbox .pl-nav{
     position:absolute;top:50%;transform:translateY(-50%);
-    font-size:34px;color:#fff;cursor:pointer;padding:10px 16px;user-select:none;
-    opacity:0.7;
+    font-size:22px;color:#fff;cursor:pointer;
+    width:48px;height:48px;border-radius:50%;
+    background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);
+    display:flex;align-items:center;justify-content:center;
   }
-  .lightbox .lb-nav:hover{opacity:1;}
-  .lb-prev{left:10px;}
-  .lb-next{right:10px;}
+  .photo-lightbox .pl-nav:hover{background:rgba(255,255,255,0.22);}
+  .pl-prev{left:24px;}
+  .pl-next{right:24px;}
+  .pl-counter{
+    position:absolute;top:28px;left:30px;color:#fff;font-size:0.8rem;
+    background:rgba(255,255,255,0.1);padding:5px 12px;border-radius:14px;
+  }
 
-  /* Education / Languages */
-  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:40px;}
-  .info-block{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;}
-  .info-block h3{font-size:0.85rem;letter-spacing:1px;color:var(--accent);text-transform:uppercase;margin-bottom:14px;}
+  /* Education / Contact */
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+  .info-block{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:26px;}
+  .info-block h3{font-size:0.75rem;letter-spacing:1.5px;color:var(--accent-dark);text-transform:uppercase;margin-bottom:16px;font-weight:700;}
   .info-block p{color:var(--muted);font-size:0.95rem;margin-bottom:8px;}
   .info-block p b{color:var(--text);}
 
   footer{
-    text-align:center;padding:40px 24px 60px;color:var(--muted);font-size:0.85rem;
+    text-align:center;padding:44px 28px 60px;color:var(--muted);font-size:0.85rem;
     border-top:1px solid var(--border);
   }
 
   @media(max-width:640px){
     nav ul{gap:14px;}
     nav ul li a{font-size:12px;}
-    .hero{padding:70px 20px 60px;}
-    .hero h1{font-size:1.8rem;}
+    .hero{padding:80px 20px 60px;}
+    .hero h1{font-size:2.1rem;}
     .two-col{grid-template-columns:1fr;}
   }
 </style>
 </head>
 <body>
 
+<div class="demo-banner">🎨 This is a design preview — not yet published to GitHub Pages</div>
+
 <header>
   <nav>
-    <div class="logo">S. NGAMSAPSIRI</div>
+    <div class="logo">S. Ngamsapsiri</div>
     <ul>
       <li><a href="#about">About</a></li>
-      <li><a href="#skills">Skills</a></li>
-      <li><a href="#experience">Experience</a></li>
       <li><a href="#portfolio">Portfolio</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
   </nav>
 </header>
 
+<nav class="side-rail" aria-label="Section navigation">
+  <a href="#about" data-section="about"><span class="dot"></span><span class="label">About</span></a>
+  <a href="#animation" data-section="animation"><span class="dot"></span><span class="label">Animation</span></a>
+  <a href="#panorama-360" data-section="panorama-360"><span class="dot"></span><span class="label">360 Panorama</span></a>
+  <a href="#perspective" data-section="perspective"><span class="dot"></span><span class="label">Perspective</span></a>
+  <a href="#contact" data-section="contact"><span class="dot"></span><span class="label">Contact</span></a>
+</nav>
+
 <section class="hero" id="about">
-  <div class="avatar">SN</div>
+  <div class="eyebrow">3D Architectural Visualizer · Samut Prakarn, Thailand</div>
   <h1>Suriyapakorn Ngamsapsiri</h1>
-  <div class="role">3D Visualization Artist</div>
+  <div class="role">Portfolio — 3D Architecture Visualization &amp; Animation</div>
   <p class="summary">
-    3D Visualization Artist with over 10 years of experience in architectural visualization,
-    advertising renders, and 360° virtual tours. Experienced in creating realistic images
-    and real-time walkthrough applications for global brands.
+    Over 10 years of experience in 3D architectural visualization and animation,
+    360° walkthrough panoramas, and creating realistic exterior and interior
+    visualizations for architecture, real estate, and retail projects.
   </p>
   <div class="cta">
     <a class="btn primary" href="#portfolio">View Portfolio</a>
@@ -202,212 +349,1968 @@
   </div>
 </section>
 
-<section id="skills">
+<section id="portfolio" class="alt">
   <div class="wrap">
-    <h2>Skills</h2>
-    <div class="skill-grid">
-      <div class="skill-card">
-        <h3>Rendering & 3D</h3>
-        <ul>
-          <li>3ds Max / V-Ray / Corona</li>
-          <li>Chaos Vantage</li>
-          <li>Lumion / D5 Render</li>
-          <li>SketchUp / AutoCAD</li>
-          <li>ZBrush</li>
-        </ul>
+    <div class="section-head">
+      <div class="kicker">Selected Work</div>
+      <h2>Portfolio</h2>
+    </div>
+
+    <!-- 1. YouTube Playlist -->
+    <div class="project-block" id="animation">
+      <div class="project-header" style="text-align:center;">
+        <h3>Animation Reel</h3>
       </div>
-      <div class="skill-card">
-        <h3>Real-Time & Post</h3>
-        <ul>
-          <li>Unreal Engine</li>
-          <li>After Effects</li>
-          <li>Premiere Pro</li>
-          <li>Photoshop</li>
-        </ul>
-      </div>
-      <div class="skill-card">
-        <h3>Plugins</h3>
-        <ul>
-          <li>Forest Pack</li>
-          <li>RailClone</li>
-          <li>GrowFX</li>
-          <li>Anima</li>
-          <li>Phoenix FD</li>
-        </ul>
+      <div class="yt-wrap yt-center">
+        <iframe src="https://www.youtube.com/embed/videoseries?list=PLOrudW-30HZI"
+          title="Animation Playlist" allowfullscreen loading="lazy"></iframe>
       </div>
     </div>
-  </div>
-</section>
 
-<section id="experience">
-  <div class="wrap">
-    <h2>Experience</h2>
-    <div class="timeline">
+    <!-- 2. 360 Panorama Albums -->
+    <div class="project-block" id="panorama-360">
+      <div class="project-header">
+        <h3>360° Panorama Walkthrough</h3>
+      </div>
 
-      <div class="job">
-        <div class="period">June 2021 — Present</div>
-        <h3>3D Visualization Artist — Moss &amp; Associates Co., Ltd.</h3>
-        <ul>
-          <li>Received project briefs by email and worked closely with the drafting team to revise layouts, elevations, and visual storytelling.</li>
-          <li>Managed multiple rounds of revisions, often dozens per project, until final launch.</li>
-          <li>Tracked updated brand and material codes/catalogs used across projects.</li>
-          <li>Collaborated across departments to keep every project moving forward.</li>
-        </ul>
-        <div class="tag-list">
-          <b>Louis Vuitton Projects</b> — Thailand: Paragon, ICONSIAM, Gaysorn Amarin, Central Chidlom, Floresta (Phuket).
-          China: Sanlitun, Beijing SKP, Suzhou Metro, Chengdu IFS, Hefei Intime Center, Xi'an SKP, Ningbo,
-          Bao'an Airport, Shanghai IFC, Shanghai Plaza 66, Wuhan SKP, Kunming Spring City 66. Other: LV ION Orchard (Singapore).
+      <p style="color:var(--muted);font-size:0.85rem;margin-bottom:18px;">
+        All 360° panoramas below are real captures from the studio archive, resized to a
+        maximum long-edge resolution of 4500px for VR viewing. Click any thumbnail to
+        open the full-screen viewer — drag to look around, or use the VR / Fullscreen button.
+      </p>
+
+      <h3 style="font-family:var(--serif);font-size:1.3rem;font-weight:400;color:var(--text);margin:8px 0 4px;">Pattaya PYCHE</h3>
+      <div class="pano-house">
+      <div class="project-header" style="margin-top:8px;">
+        <h4 style="font-family:var(--serif);font-size:1.05rem;font-weight:400;color:var(--text);">Pattaya PYCHE — Type L</h4>
+        <div class="pano-floor-tabs">
+          <button type="button" class="pano-floor-tab active" data-house="pattaya-pyche-type-l" data-floor-target="pyche-l-l1">Level 1</button>
+          <button type="button" class="pano-floor-tab" data-house="pattaya-pyche-type-l" data-floor-target="pyche-l-l2">Level 2</button>
         </div>
       </div>
-
-      <div class="job">
-        <div class="period">2019 — 2021</div>
-        <h3>3D Visualization Artist — Freelance</h3>
-        <ul>
-          <li>Coordinated with marketing teams and design/drafting departments, receiving project information to build 3D models.</li>
-          <li>Applied materials and lighting to produce realistic perspective renders supporting sales goals.</li>
-          <li>Delivered architectural renders and 360° virtual tours for a range of clients.</li>
-          <li>Managed projects end-to-end, from brief to final delivery.</li>
-        </ul>
+      <div class="pano-floor-panel" data-house="pattaya-pyche-type-l" data-album-panel="pyche-l-l1" style="display:block;">
+      <div class="carousel-wrap">
+      <div class="carousel-arrow carousel-prev" data-target="pyche-l-l1">&#10094;</div>
+      <div class="pano-grid" data-album="pyche-l-l1">
+        <div class="pano-card" data-src="pano_all/pyche_l_l1_livingroom_1.jpg" data-title="Pattaya PYCHE — Type L, Level 1 — Livingroom 1">
+          <img src="pano_all/pyche_l_l1_livingroom_1.jpg" alt="Livingroom 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_l_l1_livingroom_2.jpg" data-title="Pattaya PYCHE — Type L, Level 1 — Livingroom 2">
+          <img src="pano_all/pyche_l_l1_livingroom_2.jpg" alt="Livingroom 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_l_l1_livingroom_3.jpg" data-title="Pattaya PYCHE — Type L, Level 1 — Livingroom 3">
+          <img src="pano_all/pyche_l_l1_livingroom_3.jpg" alt="Livingroom 3" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 3</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_l_l1_livingroom_4.jpg" data-title="Pattaya PYCHE — Type L, Level 1 — Livingroom 4">
+          <img src="pano_all/pyche_l_l1_livingroom_4.jpg" alt="Livingroom 4" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 4</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_l_l1_livingroom_5.jpg" data-title="Pattaya PYCHE — Type L, Level 1 — Livingroom 5">
+          <img src="pano_all/pyche_l_l1_livingroom_5.jpg" alt="Livingroom 5" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 5</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_l_l1_livingroom_6.jpg" data-title="Pattaya PYCHE — Type L, Level 1 — Livingroom 6">
+          <img src="pano_all/pyche_l_l1_livingroom_6.jpg" alt="Livingroom 6" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 6</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_l_l1_entertainment_1.jpg" data-title="Pattaya PYCHE — Type L, Level 1 — Entertainment 1">
+          <img src="pano_all/pyche_l_l1_entertainment_1.jpg" alt="Entertainment 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Entertainment 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_l_l1_entertainment_2.jpg" data-title="Pattaya PYCHE — Type L, Level 1 — Entertainment 2">
+          <img src="pano_all/pyche_l_l1_entertainment_2.jpg" alt="Entertainment 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Entertainment 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_l_l1_bathroom_entertainment.jpg" data-title="Pattaya PYCHE — Type L, Level 1 — Bathroom Entertainment">
+          <img src="pano_all/pyche_l_l1_bathroom_entertainment.jpg" alt="Bathroom Entertainment" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bathroom Entertainment</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_l_l1_bathroom_living.jpg" data-title="Pattaya PYCHE — Type L, Level 1 — Bathroom Living">
+          <img src="pano_all/pyche_l_l1_bathroom_living.jpg" alt="Bathroom Living" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bathroom Living</div>
+        </div>
+      </div>
+      <div class="carousel-arrow carousel-next" data-target="pyche-l-l1">&#10095;</div>
+      </div>
+      </div>
+      <div class="pano-floor-panel" data-house="pattaya-pyche-type-l" data-album-panel="pyche-l-l2" style="display:none;">
+      <div class="carousel-wrap">
+      <div class="carousel-arrow carousel-prev" data-target="pyche-l-l2">&#10094;</div>
+      <div class="pano-grid" data-album="pyche-l-l2">
+        <div class="pano-card" data-src="pano_all/pyche_l_l2_daughter_bedroom_1.jpg" data-title="Pattaya PYCHE — Type L, Level 2 — Daughter Bedroom 1">
+          <img src="pano_all/pyche_l_l2_daughter_bedroom_1.jpg" alt="Daughter Bedroom 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Daughter Bedroom 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_l_l2_daughter_bedroom_2.jpg" data-title="Pattaya PYCHE — Type L, Level 2 — Daughter Bedroom 2">
+          <img src="pano_all/pyche_l_l2_daughter_bedroom_2.jpg" alt="Daughter Bedroom 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Daughter Bedroom 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_l_l2_family_area.jpg" data-title="Pattaya PYCHE — Type L, Level 2 — Family Area">
+          <img src="pano_all/pyche_l_l2_family_area.jpg" alt="Family Area" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Family Area</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_l_l2_master_bedroom_1.jpg" data-title="Pattaya PYCHE — Type L, Level 2 — Master Bedroom 1">
+          <img src="pano_all/pyche_l_l2_master_bedroom_1.jpg" alt="Master Bedroom 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Master Bedroom 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_l_l2_master_bedroom_2.jpg" data-title="Pattaya PYCHE — Type L, Level 2 — Master Bedroom 2">
+          <img src="pano_all/pyche_l_l2_master_bedroom_2.jpg" alt="Master Bedroom 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Master Bedroom 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_l_l2_master_bedroom_3.jpg" data-title="Pattaya PYCHE — Type L, Level 2 — Master Bedroom 3">
+          <img src="pano_all/pyche_l_l2_master_bedroom_3.jpg" alt="Master Bedroom 3" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Master Bedroom 3</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_l_l2_son_bedroom_1.jpg" data-title="Pattaya PYCHE — Type L, Level 2 — Son Bedroom 1">
+          <img src="pano_all/pyche_l_l2_son_bedroom_1.jpg" alt="Son Bedroom 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Son Bedroom 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_l_l2_son_bedroom_2.jpg" data-title="Pattaya PYCHE — Type L, Level 2 — Son Bedroom 2">
+          <img src="pano_all/pyche_l_l2_son_bedroom_2.jpg" alt="Son Bedroom 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Son Bedroom 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_l_l2_son_bedroom_3.jpg" data-title="Pattaya PYCHE — Type L, Level 2 — Son Bedroom 3">
+          <img src="pano_all/pyche_l_l2_son_bedroom_3.jpg" alt="Son Bedroom 3" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Son Bedroom 3</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_l_l2_bathroom_daughter.jpg" data-title="Pattaya PYCHE — Type L, Level 2 — Bathroom Daughter">
+          <img src="pano_all/pyche_l_l2_bathroom_daughter.jpg" alt="Bathroom Daughter" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bathroom Daughter</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_l_l2_bathroom_master.jpg" data-title="Pattaya PYCHE — Type L, Level 2 — Bathroom Master">
+          <img src="pano_all/pyche_l_l2_bathroom_master.jpg" alt="Bathroom Master" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bathroom Master</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_l_l2_bathroom_son.jpg" data-title="Pattaya PYCHE — Type L, Level 2 — Bathroom Son">
+          <img src="pano_all/pyche_l_l2_bathroom_son.jpg" alt="Bathroom Son" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bathroom Son</div>
+        </div>
+      </div>
+      <div class="carousel-arrow carousel-next" data-target="pyche-l-l2">&#10095;</div>
+      </div>
+      </div>
       </div>
 
-      <div class="job">
-        <div class="period">May 2011 — 2018</div>
-        <h3>Senior 3D Visualization &amp; Animation — 3DOJ, Bangkok</h3>
-        <ul>
-          <li>Directed the 3D visualization team's workflow to meet client requirements and deadlines.</li>
-          <li>Produced high-quality photorealistic renders, interior and exterior, for real estate projects.</li>
-          <li>Produced walkthrough animations for client presentations.</li>
-        </ul>
+      <div class="pano-house">
+      <div class="project-header" style="margin-top:8px;">
+        <h4 style="font-family:var(--serif);font-size:1.05rem;font-weight:400;color:var(--text);">Pattaya PYCHE — Type M</h4>
+        <div class="pano-floor-tabs">
+          <button type="button" class="pano-floor-tab active" data-house="pattaya-pyche-type-m" data-floor-target="pyche-m-l1">Level 1</button>
+          <button type="button" class="pano-floor-tab" data-house="pattaya-pyche-type-m" data-floor-target="pyche-m-l2">Level 2</button>
+        </div>
+      </div>
+      <div class="pano-floor-panel" data-house="pattaya-pyche-type-m" data-album-panel="pyche-m-l1" style="display:block;">
+      <div class="carousel-wrap">
+      <div class="carousel-arrow carousel-prev" data-target="pyche-m-l1">&#10094;</div>
+      <div class="pano-grid" data-album="pyche-m-l1">
+        <div class="pano-card" data-src="pano_all/pyche_m_l1_livingroom_1.jpg" data-title="Pattaya PYCHE — Type M, Level 1 — Livingroom 1">
+          <img src="pano_all/pyche_m_l1_livingroom_1.jpg" alt="Livingroom 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_m_l1_livingroom_2.jpg" data-title="Pattaya PYCHE — Type M, Level 1 — Livingroom 2">
+          <img src="pano_all/pyche_m_l1_livingroom_2.jpg" alt="Livingroom 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_m_l1_livingroom_3.jpg" data-title="Pattaya PYCHE — Type M, Level 1 — Livingroom 3">
+          <img src="pano_all/pyche_m_l1_livingroom_3.jpg" alt="Livingroom 3" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 3</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_m_l1_livingroom_4.jpg" data-title="Pattaya PYCHE — Type M, Level 1 — Livingroom 4">
+          <img src="pano_all/pyche_m_l1_livingroom_4.jpg" alt="Livingroom 4" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 4</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_m_l1_livingroom_5.jpg" data-title="Pattaya PYCHE — Type M, Level 1 — Livingroom 5">
+          <img src="pano_all/pyche_m_l1_livingroom_5.jpg" alt="Livingroom 5" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 5</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_m_l1_livingroom_6.jpg" data-title="Pattaya PYCHE — Type M, Level 1 — Livingroom 6">
+          <img src="pano_all/pyche_m_l1_livingroom_6.jpg" alt="Livingroom 6" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 6</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_m_l1_grandma_bedroom_1.jpg" data-title="Pattaya PYCHE — Type M, Level 1 — Grandma Bedroom 1">
+          <img src="pano_all/pyche_m_l1_grandma_bedroom_1.jpg" alt="Grandma Bedroom 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Grandma Bedroom 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_m_l1_bathroom_grandma_1.jpg" data-title="Pattaya PYCHE — Type M, Level 1 — Bathroom Grandma 1">
+          <img src="pano_all/pyche_m_l1_bathroom_grandma_1.jpg" alt="Bathroom Grandma 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bathroom Grandma 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_m_l1_bathroom_living.jpg" data-title="Pattaya PYCHE — Type M, Level 1 — Bathroom Living">
+          <img src="pano_all/pyche_m_l1_bathroom_living.jpg" alt="Bathroom Living" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bathroom Living</div>
+        </div>
+      </div>
+      <div class="carousel-arrow carousel-next" data-target="pyche-m-l1">&#10095;</div>
+      </div>
+      </div>
+      <div class="pano-floor-panel" data-house="pattaya-pyche-type-m" data-album-panel="pyche-m-l2" style="display:none;">
+      <div class="carousel-wrap">
+      <div class="carousel-arrow carousel-prev" data-target="pyche-m-l2">&#10094;</div>
+      <div class="pano-grid" data-album="pyche-m-l2">
+        <div class="pano-card" data-src="pano_all/pyche_m_l2_daughter_bedroom_1.jpg" data-title="Pattaya PYCHE — Type M, Level 2 — Daughter Bedroom 1">
+          <img src="pano_all/pyche_m_l2_daughter_bedroom_1.jpg" alt="Daughter Bedroom 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Daughter Bedroom 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_m_l2_daughter_bedroom_2.jpg" data-title="Pattaya PYCHE — Type M, Level 2 — Daughter Bedroom 2">
+          <img src="pano_all/pyche_m_l2_daughter_bedroom_2.jpg" alt="Daughter Bedroom 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Daughter Bedroom 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_m_l2_family_area_1.jpg" data-title="Pattaya PYCHE — Type M, Level 2 — Family Area 1">
+          <img src="pano_all/pyche_m_l2_family_area_1.jpg" alt="Family Area 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Family Area 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_m_l2_master_bedroom_1.jpg" data-title="Pattaya PYCHE — Type M, Level 2 — Master Bedroom 1">
+          <img src="pano_all/pyche_m_l2_master_bedroom_1.jpg" alt="Master Bedroom 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Master Bedroom 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_m_l2_master_bedroom_2.jpg" data-title="Pattaya PYCHE — Type M, Level 2 — Master Bedroom 2">
+          <img src="pano_all/pyche_m_l2_master_bedroom_2.jpg" alt="Master Bedroom 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Master Bedroom 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_m_l2_multipropose_1.jpg" data-title="Pattaya PYCHE — Type M, Level 2 — Multipropose 1">
+          <img src="pano_all/pyche_m_l2_multipropose_1.jpg" alt="Multipropose 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Multipropose 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_m_l2_multipropose_2.jpg" data-title="Pattaya PYCHE — Type M, Level 2 — Multipropose 2">
+          <img src="pano_all/pyche_m_l2_multipropose_2.jpg" alt="Multipropose 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Multipropose 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_m_l2_bathroom_daughter_1.jpg" data-title="Pattaya PYCHE — Type M, Level 2 — Bathroom Daughter 1">
+          <img src="pano_all/pyche_m_l2_bathroom_daughter_1.jpg" alt="Bathroom Daughter 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bathroom Daughter 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_m_l2_bathroom_master_1.jpg" data-title="Pattaya PYCHE — Type M, Level 2 — Bathroom Master 1">
+          <img src="pano_all/pyche_m_l2_bathroom_master_1.jpg" alt="Bathroom Master 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bathroom Master 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_m_l2_bathroom_multipurpose_1.jpg" data-title="Pattaya PYCHE — Type M, Level 2 — Bathroom Multipurpose 1">
+          <img src="pano_all/pyche_m_l2_bathroom_multipurpose_1.jpg" alt="Bathroom Multipurpose 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bathroom Multipurpose 1</div>
+        </div>
+      </div>
+      <div class="carousel-arrow carousel-next" data-target="pyche-m-l2">&#10095;</div>
+      </div>
+      </div>
       </div>
 
+      <div class="pano-house">
+      <div class="project-header" style="margin-top:8px;">
+        <h4 style="font-family:var(--serif);font-size:1.05rem;font-weight:400;color:var(--text);">Pattaya PYCHE — Type S</h4>
+        <div class="pano-floor-tabs">
+          <button type="button" class="pano-floor-tab active" data-house="pattaya-pyche-type-s" data-floor-target="pyche-s-l1">Level 1</button>
+          <button type="button" class="pano-floor-tab" data-house="pattaya-pyche-type-s" data-floor-target="pyche-s-l2">Level 2</button>
+        </div>
+      </div>
+      <div class="pano-floor-panel" data-house="pattaya-pyche-type-s" data-album-panel="pyche-s-l1" style="display:block;">
+      <div class="carousel-wrap">
+      <div class="carousel-arrow carousel-prev" data-target="pyche-s-l1">&#10094;</div>
+      <div class="pano-grid" data-album="pyche-s-l1">
+        <div class="pano-card" data-src="pano_all/pyche_s_l1_livingroom_1.jpg" data-title="Pattaya PYCHE — Type S, Level 1 — Livingroom 1">
+          <img src="pano_all/pyche_s_l1_livingroom_1.jpg" alt="Livingroom 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_s_l1_livingroom_2.jpg" data-title="Pattaya PYCHE — Type S, Level 1 — Livingroom 2">
+          <img src="pano_all/pyche_s_l1_livingroom_2.jpg" alt="Livingroom 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_s_l1_livingroom_3.jpg" data-title="Pattaya PYCHE — Type S, Level 1 — Livingroom 3">
+          <img src="pano_all/pyche_s_l1_livingroom_3.jpg" alt="Livingroom 3" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 3</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_s_l1_livingroom_4.jpg" data-title="Pattaya PYCHE — Type S, Level 1 — Livingroom 4">
+          <img src="pano_all/pyche_s_l1_livingroom_4.jpg" alt="Livingroom 4" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 4</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_s_l1_kitchen_1.jpg" data-title="Pattaya PYCHE — Type S, Level 1 — Kitchen 1">
+          <img src="pano_all/pyche_s_l1_kitchen_1.jpg" alt="Kitchen 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Kitchen 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_s_l1_fashion_1.jpg" data-title="Pattaya PYCHE — Type S, Level 1 — Fashion 1">
+          <img src="pano_all/pyche_s_l1_fashion_1.jpg" alt="Fashion 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Fashion 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_s_l1_bathroom.jpg" data-title="Pattaya PYCHE — Type S, Level 1 — Bathroom">
+          <img src="pano_all/pyche_s_l1_bathroom.jpg" alt="Bathroom" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bathroom</div>
+        </div>
+      </div>
+      <div class="carousel-arrow carousel-next" data-target="pyche-s-l1">&#10095;</div>
+      </div>
+      </div>
+      <div class="pano-floor-panel" data-house="pattaya-pyche-type-s" data-album-panel="pyche-s-l2" style="display:none;">
+      <div class="carousel-wrap">
+      <div class="carousel-arrow carousel-prev" data-target="pyche-s-l2">&#10094;</div>
+      <div class="pano-grid" data-album="pyche-s-l2">
+        <div class="pano-card" data-src="pano_all/pyche_s_l2_corridor_1.jpg" data-title="Pattaya PYCHE — Type S, Level 2 — Corridor 1">
+          <img src="pano_all/pyche_s_l2_corridor_1.jpg" alt="Corridor 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Corridor 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_s_l2_masterbedroom_1.jpg" data-title="Pattaya PYCHE — Type S, Level 2 — Masterbedroom 1">
+          <img src="pano_all/pyche_s_l2_masterbedroom_1.jpg" alt="Masterbedroom 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Masterbedroom 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_s_l2_masterbedroom_2.jpg" data-title="Pattaya PYCHE — Type S, Level 2 — Masterbedroom 2">
+          <img src="pano_all/pyche_s_l2_masterbedroom_2.jpg" alt="Masterbedroom 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Masterbedroom 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_s_l2_masterbedroom_3.jpg" data-title="Pattaya PYCHE — Type S, Level 2 — Masterbedroom 3">
+          <img src="pano_all/pyche_s_l2_masterbedroom_3.jpg" alt="Masterbedroom 3" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Masterbedroom 3</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_s_l2_painting_1.jpg" data-title="Pattaya PYCHE — Type S, Level 2 — Painting 1">
+          <img src="pano_all/pyche_s_l2_painting_1.jpg" alt="Painting 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Painting 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_s_l2_painting_2.jpg" data-title="Pattaya PYCHE — Type S, Level 2 — Painting 2">
+          <img src="pano_all/pyche_s_l2_painting_2.jpg" alt="Painting 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Painting 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_s_l2_son_bedroom_1.jpg" data-title="Pattaya PYCHE — Type S, Level 2 — Son Bedroom 1">
+          <img src="pano_all/pyche_s_l2_son_bedroom_1.jpg" alt="Son Bedroom 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Son Bedroom 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_s_l2_son_bedroom_2.jpg" data-title="Pattaya PYCHE — Type S, Level 2 — Son Bedroom 2">
+          <img src="pano_all/pyche_s_l2_son_bedroom_2.jpg" alt="Son Bedroom 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Son Bedroom 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_s_l2_bathroom_painting.jpg" data-title="Pattaya PYCHE — Type S, Level 2 — Bathroom Painting">
+          <img src="pano_all/pyche_s_l2_bathroom_painting.jpg" alt="Bathroom Painting" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bathroom Painting</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_s_l2_bathroom_son.jpg" data-title="Pattaya PYCHE — Type S, Level 2 — Bathroom Son">
+          <img src="pano_all/pyche_s_l2_bathroom_son.jpg" alt="Bathroom Son" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bathroom Son</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/pyche_s_l2_master_bathroom.jpg" data-title="Pattaya PYCHE — Type S, Level 2 — Master Bathroom">
+          <img src="pano_all/pyche_s_l2_master_bathroom.jpg" alt="Master Bathroom" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Master Bathroom</div>
+        </div>
+      </div>
+      <div class="carousel-arrow carousel-next" data-target="pyche-s-l2">&#10095;</div>
+      </div>
+      </div>
+      </div>
+<h3 style="font-family:var(--serif);font-size:1.3rem;font-weight:400;color:var(--text);margin:44px 0 4px;">Pattaya Rekha</h3>
+      <div class="pano-house">
+      <div class="project-header" style="margin-top:8px;">
+        <h4 style="font-family:var(--serif);font-size:1.05rem;font-weight:400;color:var(--text);">Pattaya Rekha — Type L</h4>
+        <div class="pano-floor-tabs">
+          <button type="button" class="pano-floor-tab active" data-house="pattaya-rekha-type-l" data-floor-target="rekha-l-l1">Level 1</button>
+          <button type="button" class="pano-floor-tab" data-house="pattaya-rekha-type-l" data-floor-target="rekha-l-l2">Level 2</button>
+        </div>
+      </div>
+      <div class="pano-floor-panel" data-house="pattaya-rekha-type-l" data-album-panel="rekha-l-l1" style="display:block;">
+      <div class="carousel-wrap">
+      <div class="carousel-arrow carousel-prev" data-target="rekha-l-l1">&#10094;</div>
+      <div class="pano-grid" data-album="rekha-l-l1">
+        <div class="pano-card" data-src="pano_all/rekha_l_l1_livingroom_1.jpg" data-title="Pattaya Rekha — Type L, Level 1 — Livingroom 1">
+          <img src="pano_all/rekha_l_l1_livingroom_1.jpg" alt="Livingroom 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_l_l1_livingroom_2.jpg" data-title="Pattaya Rekha — Type L, Level 1 — Livingroom 2">
+          <img src="pano_all/rekha_l_l1_livingroom_2.jpg" alt="Livingroom 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_l_l1_livingroom_3.jpg" data-title="Pattaya Rekha — Type L, Level 1 — Livingroom 3">
+          <img src="pano_all/rekha_l_l1_livingroom_3.jpg" alt="Livingroom 3" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 3</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_l_l1_livingroom_4.jpg" data-title="Pattaya Rekha — Type L, Level 1 — Livingroom 4">
+          <img src="pano_all/rekha_l_l1_livingroom_4.jpg" alt="Livingroom 4" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 4</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_l_l1_livingroom_5.jpg" data-title="Pattaya Rekha — Type L, Level 1 — Livingroom 5">
+          <img src="pano_all/rekha_l_l1_livingroom_5.jpg" alt="Livingroom 5" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 5</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_l_l1_livingroom_6.jpg" data-title="Pattaya Rekha — Type L, Level 1 — Livingroom 6">
+          <img src="pano_all/rekha_l_l1_livingroom_6.jpg" alt="Livingroom 6" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 6</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_l_l1_livingroom_7.jpg" data-title="Pattaya Rekha — Type L, Level 1 — Livingroom 7">
+          <img src="pano_all/rekha_l_l1_livingroom_7.jpg" alt="Livingroom 7" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 7</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_l_l1_livingroom_8.jpg" data-title="Pattaya Rekha — Type L, Level 1 — Livingroom 8">
+          <img src="pano_all/rekha_l_l1_livingroom_8.jpg" alt="Livingroom 8" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 8</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_l_l1_livingroom_9.jpg" data-title="Pattaya Rekha — Type L, Level 1 — Livingroom 9">
+          <img src="pano_all/rekha_l_l1_livingroom_9.jpg" alt="Livingroom 9" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 9</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_l_l1_kitchen_1.jpg" data-title="Pattaya Rekha — Type L, Level 1 — Kitchen 1">
+          <img src="pano_all/rekha_l_l1_kitchen_1.jpg" alt="Kitchen 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Kitchen 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_l_l1_elder.jpg" data-title="Pattaya Rekha — Type L, Level 1 — Elder">
+          <img src="pano_all/rekha_l_l1_elder.jpg" alt="Elder" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Elder</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_l_l1_bathroom_elder.jpg" data-title="Pattaya Rekha — Type L, Level 1 — Bathroom Elder">
+          <img src="pano_all/rekha_l_l1_bathroom_elder.jpg" alt="Bathroom Elder" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bathroom Elder</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_l_l1_bathroom_foyer.jpg" data-title="Pattaya Rekha — Type L, Level 1 — Bathroom Foyer">
+          <img src="pano_all/rekha_l_l1_bathroom_foyer.jpg" alt="Bathroom Foyer" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bathroom Foyer</div>
+        </div>
+      </div>
+      <div class="carousel-arrow carousel-next" data-target="rekha-l-l1">&#10095;</div>
+      </div>
+      </div>
+      <div class="pano-floor-panel" data-house="pattaya-rekha-type-l" data-album-panel="rekha-l-l2" style="display:none;">
+      <div class="carousel-wrap">
+      <div class="carousel-arrow carousel-prev" data-target="rekha-l-l2">&#10094;</div>
+      <div class="pano-grid" data-album="rekha-l-l2">
+        <div class="pano-card" data-src="pano_all/rekha_l_l2_1.jpg" data-title="Pattaya Rekha — Type L, Level 2 — 1">
+          <img src="pano_all/rekha_l_l2_1.jpg" alt="1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_l_l2_2.jpg" data-title="Pattaya Rekha — Type L, Level 2 — 2">
+          <img src="pano_all/rekha_l_l2_2.jpg" alt="2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_l_l2_3.jpg" data-title="Pattaya Rekha — Type L, Level 2 — 3">
+          <img src="pano_all/rekha_l_l2_3.jpg" alt="3" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">3</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_l_l2_colector_football_room_1.jpg" data-title="Pattaya Rekha — Type L, Level 2 — Colector Football Room 1">
+          <img src="pano_all/rekha_l_l2_colector_football_room_1.jpg" alt="Colector Football Room 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Colector Football Room 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_l_l2_colector_football_room_2.jpg" data-title="Pattaya Rekha — Type L, Level 2 — Colector Football Room 2">
+          <img src="pano_all/rekha_l_l2_colector_football_room_2.jpg" alt="Colector Football Room 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Colector Football Room 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_l_l2_daughter_bedroom_1.jpg" data-title="Pattaya Rekha — Type L, Level 2 — Daughter Bedroom 1">
+          <img src="pano_all/rekha_l_l2_daughter_bedroom_1.jpg" alt="Daughter Bedroom 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Daughter Bedroom 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_l_l2_daughter_bedroom_2.jpg" data-title="Pattaya Rekha — Type L, Level 2 — Daughter Bedroom 2">
+          <img src="pano_all/rekha_l_l2_daughter_bedroom_2.jpg" alt="Daughter Bedroom 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Daughter Bedroom 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_l_l2_masterbedroom_1.jpg" data-title="Pattaya Rekha — Type L, Level 2 — Masterbedroom 1">
+          <img src="pano_all/rekha_l_l2_masterbedroom_1.jpg" alt="Masterbedroom 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Masterbedroom 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_l_l2_masterbedroom_2.jpg" data-title="Pattaya Rekha — Type L, Level 2 — Masterbedroom 2">
+          <img src="pano_all/rekha_l_l2_masterbedroom_2.jpg" alt="Masterbedroom 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Masterbedroom 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_l_l2_son_bedroom_1.jpg" data-title="Pattaya Rekha — Type L, Level 2 — Son Bedroom 1">
+          <img src="pano_all/rekha_l_l2_son_bedroom_1.jpg" alt="Son Bedroom 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Son Bedroom 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_l_l2_son_bedroom_2.jpg" data-title="Pattaya Rekha — Type L, Level 2 — Son Bedroom 2">
+          <img src="pano_all/rekha_l_l2_son_bedroom_2.jpg" alt="Son Bedroom 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Son Bedroom 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_l_l2_son_bedroom_3.jpg" data-title="Pattaya Rekha — Type L, Level 2 — Son Bedroom 3">
+          <img src="pano_all/rekha_l_l2_son_bedroom_3.jpg" alt="Son Bedroom 3" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Son Bedroom 3</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_l_l2_bathroom_collector.jpg" data-title="Pattaya Rekha — Type L, Level 2 — Bathroom Collector">
+          <img src="pano_all/rekha_l_l2_bathroom_collector.jpg" alt="Bathroom Collector" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bathroom Collector</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_l_l2_bathroom_daughter.jpg" data-title="Pattaya Rekha — Type L, Level 2 — Bathroom Daughter">
+          <img src="pano_all/rekha_l_l2_bathroom_daughter.jpg" alt="Bathroom Daughter" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bathroom Daughter</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_l_l2_bathroom_master.jpg" data-title="Pattaya Rekha — Type L, Level 2 — Bathroom Master">
+          <img src="pano_all/rekha_l_l2_bathroom_master.jpg" alt="Bathroom Master" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bathroom Master</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_l_l2_bathroom_son.jpg" data-title="Pattaya Rekha — Type L, Level 2 — Bathroom Son">
+          <img src="pano_all/rekha_l_l2_bathroom_son.jpg" alt="Bathroom Son" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bathroom Son</div>
+        </div>
+      </div>
+      <div class="carousel-arrow carousel-next" data-target="rekha-l-l2">&#10095;</div>
+      </div>
+      </div>
+      </div>
+
+      <div class="pano-house">
+      <div class="project-header" style="margin-top:8px;">
+        <h4 style="font-family:var(--serif);font-size:1.05rem;font-weight:400;color:var(--text);">Pattaya Rekha — Type M</h4>
+        <div class="pano-floor-tabs">
+          <button type="button" class="pano-floor-tab active" data-house="pattaya-rekha-type-m" data-floor-target="rekha-m-l1">Level 1</button>
+          <button type="button" class="pano-floor-tab" data-house="pattaya-rekha-type-m" data-floor-target="rekha-m-l2">Level 2</button>
+        </div>
+      </div>
+      <div class="pano-floor-panel" data-house="pattaya-rekha-type-m" data-album-panel="rekha-m-l1" style="display:block;">
+      <div class="carousel-wrap">
+      <div class="carousel-arrow carousel-prev" data-target="rekha-m-l1">&#10094;</div>
+      <div class="pano-grid" data-album="rekha-m-l1">
+        <div class="pano-card" data-src="pano_all/rekha_m_l1_livingroom_1.jpg" data-title="Pattaya Rekha — Type M, Level 1 — Livingroom 1">
+          <img src="pano_all/rekha_m_l1_livingroom_1.jpg" alt="Livingroom 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_m_l1_livingroom_2.jpg" data-title="Pattaya Rekha — Type M, Level 1 — Livingroom 2">
+          <img src="pano_all/rekha_m_l1_livingroom_2.jpg" alt="Livingroom 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_m_l1_livingroom_3.jpg" data-title="Pattaya Rekha — Type M, Level 1 — Livingroom 3">
+          <img src="pano_all/rekha_m_l1_livingroom_3.jpg" alt="Livingroom 3" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 3</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_m_l1_livingroom_4.jpg" data-title="Pattaya Rekha — Type M, Level 1 — Livingroom 4">
+          <img src="pano_all/rekha_m_l1_livingroom_4.jpg" alt="Livingroom 4" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 4</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_m_l1_livingroom_6.jpg" data-title="Pattaya Rekha — Type M, Level 1 — Livingroom 6">
+          <img src="pano_all/rekha_m_l1_livingroom_6.jpg" alt="Livingroom 6" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 6</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_m_l1_livingroom_7.jpg" data-title="Pattaya Rekha — Type M, Level 1 — Livingroom 7">
+          <img src="pano_all/rekha_m_l1_livingroom_7.jpg" alt="Livingroom 7" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 7</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_m_l1_livingroom_8.jpg" data-title="Pattaya Rekha — Type M, Level 1 — Livingroom 8">
+          <img src="pano_all/rekha_m_l1_livingroom_8.jpg" alt="Livingroom 8" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 8</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_m_l1_kitchen.jpg" data-title="Pattaya Rekha — Type M, Level 1 — Kitchen">
+          <img src="pano_all/rekha_m_l1_kitchen.jpg" alt="Kitchen" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Kitchen</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_m_l1_jet_ski_room_1.jpg" data-title="Pattaya Rekha — Type M, Level 1 — Jet Ski Room 1">
+          <img src="pano_all/rekha_m_l1_jet_ski_room_1.jpg" alt="Jet Ski Room 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Jet Ski Room 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_m_l1_bathroom_foyer.jpg" data-title="Pattaya Rekha — Type M, Level 1 — Bathroom Foyer">
+          <img src="pano_all/rekha_m_l1_bathroom_foyer.jpg" alt="Bathroom Foyer" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bathroom Foyer</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_m_l1_jet_ski_room_bathroom.jpg" data-title="Pattaya Rekha — Type M, Level 1 — Jet Ski Room Bathroom">
+          <img src="pano_all/rekha_m_l1_jet_ski_room_bathroom.jpg" alt="Jet Ski Room Bathroom" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Jet Ski Room Bathroom</div>
+        </div>
+      </div>
+      <div class="carousel-arrow carousel-next" data-target="rekha-m-l1">&#10095;</div>
+      </div>
+      </div>
+      <div class="pano-floor-panel" data-house="pattaya-rekha-type-m" data-album-panel="rekha-m-l2" style="display:none;">
+      <div class="carousel-wrap">
+      <div class="carousel-arrow carousel-prev" data-target="rekha-m-l2">&#10094;</div>
+      <div class="pano-grid" data-album="rekha-m-l2">
+        <div class="pano-card" data-src="pano_all/rekha_m_l2_daughter_bedroom_1.jpg" data-title="Pattaya Rekha — Type M, Level 2 — Daughter Bedroom 1">
+          <img src="pano_all/rekha_m_l2_daughter_bedroom_1.jpg" alt="Daughter Bedroom 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Daughter Bedroom 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_m_l2_daughter_bedroom_2.jpg" data-title="Pattaya Rekha — Type M, Level 2 — Daughter Bedroom 2">
+          <img src="pano_all/rekha_m_l2_daughter_bedroom_2.jpg" alt="Daughter Bedroom 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Daughter Bedroom 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_m_l2_master_bedroom_1.jpg" data-title="Pattaya Rekha — Type M, Level 2 — Master Bedroom 1">
+          <img src="pano_all/rekha_m_l2_master_bedroom_1.jpg" alt="Master Bedroom 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Master Bedroom 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_m_l2_master_bedroom_2.jpg" data-title="Pattaya Rekha — Type M, Level 2 — Master Bedroom 2">
+          <img src="pano_all/rekha_m_l2_master_bedroom_2.jpg" alt="Master Bedroom 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Master Bedroom 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_m_l2_music_area_1.jpg" data-title="Pattaya Rekha — Type M, Level 2 — Music Area 1">
+          <img src="pano_all/rekha_m_l2_music_area_1.jpg" alt="Music Area 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Music Area 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_m_l2_music_area_2.jpg" data-title="Pattaya Rekha — Type M, Level 2 — Music Area 2">
+          <img src="pano_all/rekha_m_l2_music_area_2.jpg" alt="Music Area 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Music Area 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_m_l2_son_bedroom_1.jpg" data-title="Pattaya Rekha — Type M, Level 2 — Son Bedroom 1">
+          <img src="pano_all/rekha_m_l2_son_bedroom_1.jpg" alt="Son Bedroom 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Son Bedroom 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_m_l2_son_bedroom_2.jpg" data-title="Pattaya Rekha — Type M, Level 2 — Son Bedroom 2">
+          <img src="pano_all/rekha_m_l2_son_bedroom_2.jpg" alt="Son Bedroom 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Son Bedroom 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_m_l2_daughter_bathroom.jpg" data-title="Pattaya Rekha — Type M, Level 2 — Daughter Bathroom">
+          <img src="pano_all/rekha_m_l2_daughter_bathroom.jpg" alt="Daughter Bathroom" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Daughter Bathroom</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_m_l2_master_bathroom_1.jpg" data-title="Pattaya Rekha — Type M, Level 2 — Master Bathroom 1">
+          <img src="pano_all/rekha_m_l2_master_bathroom_1.jpg" alt="Master Bathroom 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Master Bathroom 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_m_l2_son_bathroom.jpg" data-title="Pattaya Rekha — Type M, Level 2 — Son Bathroom">
+          <img src="pano_all/rekha_m_l2_son_bathroom.jpg" alt="Son Bathroom" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Son Bathroom</div>
+        </div>
+      </div>
+      <div class="carousel-arrow carousel-next" data-target="rekha-m-l2">&#10095;</div>
+      </div>
+      </div>
+      </div>
+
+      <div class="pano-house">
+      <div class="project-header" style="margin-top:8px;">
+        <h4 style="font-family:var(--serif);font-size:1.05rem;font-weight:400;color:var(--text);">Pattaya Rekha — Type S</h4>
+        <div class="pano-floor-tabs">
+          <button type="button" class="pano-floor-tab active" data-house="pattaya-rekha-type-s" data-floor-target="rekha-s-l1">Level 1</button>
+          <button type="button" class="pano-floor-tab" data-house="pattaya-rekha-type-s" data-floor-target="rekha-s-l2">Level 2</button>
+        </div>
+      </div>
+      <div class="pano-floor-panel" data-house="pattaya-rekha-type-s" data-album-panel="rekha-s-l1" style="display:block;">
+      <div class="carousel-wrap">
+      <div class="carousel-arrow carousel-prev" data-target="rekha-s-l1">&#10094;</div>
+      <div class="pano-grid" data-album="rekha-s-l1">
+        <div class="pano-card" data-src="pano_all/rekha_s_l1_livingroom_1.jpg" data-title="Pattaya Rekha — Type S, Level 1 — Livingroom 1">
+          <img src="pano_all/rekha_s_l1_livingroom_1.jpg" alt="Livingroom 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_s_l1_livingroom_2.jpg" data-title="Pattaya Rekha — Type S, Level 1 — Livingroom 2">
+          <img src="pano_all/rekha_s_l1_livingroom_2.jpg" alt="Livingroom 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_s_l1_livingroom_3.jpg" data-title="Pattaya Rekha — Type S, Level 1 — Livingroom 3">
+          <img src="pano_all/rekha_s_l1_livingroom_3.jpg" alt="Livingroom 3" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 3</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_s_l1_livingroom_4.jpg" data-title="Pattaya Rekha — Type S, Level 1 — Livingroom 4">
+          <img src="pano_all/rekha_s_l1_livingroom_4.jpg" alt="Livingroom 4" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 4</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_s_l1_livingroom_5.jpg" data-title="Pattaya Rekha — Type S, Level 1 — Livingroom 5">
+          <img src="pano_all/rekha_s_l1_livingroom_5.jpg" alt="Livingroom 5" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 5</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_s_l1_livingroom_6.jpg" data-title="Pattaya Rekha — Type S, Level 1 — Livingroom 6">
+          <img src="pano_all/rekha_s_l1_livingroom_6.jpg" alt="Livingroom 6" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 6</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_s_l1_kitchen.jpg" data-title="Pattaya Rekha — Type S, Level 1 — Kitchen">
+          <img src="pano_all/rekha_s_l1_kitchen.jpg" alt="Kitchen" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Kitchen</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_s_l1_creative_area_1.jpg" data-title="Pattaya Rekha — Type S, Level 1 — Creative Area 1">
+          <img src="pano_all/rekha_s_l1_creative_area_1.jpg" alt="Creative Area 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Creative Area 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_s_l1_creative_bathroom.jpg" data-title="Pattaya Rekha — Type S, Level 1 — Creative Bathroom">
+          <img src="pano_all/rekha_s_l1_creative_bathroom.jpg" alt="Creative Bathroom" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Creative Bathroom</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_s_l1_livingroom_bathroom.jpg" data-title="Pattaya Rekha — Type S, Level 1 — Livingroom Bathroom">
+          <img src="pano_all/rekha_s_l1_livingroom_bathroom.jpg" alt="Livingroom Bathroom" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom Bathroom</div>
+        </div>
+      </div>
+      <div class="carousel-arrow carousel-next" data-target="rekha-s-l1">&#10095;</div>
+      </div>
+      </div>
+      <div class="pano-floor-panel" data-house="pattaya-rekha-type-s" data-album-panel="rekha-s-l2" style="display:none;">
+      <div class="carousel-wrap">
+      <div class="carousel-arrow carousel-prev" data-target="rekha-s-l2">&#10094;</div>
+      <div class="pano-grid" data-album="rekha-s-l2">
+        <div class="pano-card" data-src="pano_all/rekha_s_l2_bedroom2_1.jpg" data-title="Pattaya Rekha — Type S, Level 2 — Bedroom2 1">
+          <img src="pano_all/rekha_s_l2_bedroom2_1.jpg" alt="Bedroom2 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bedroom2 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_s_l2_bedroom2_2.jpg" data-title="Pattaya Rekha — Type S, Level 2 — Bedroom2 2">
+          <img src="pano_all/rekha_s_l2_bedroom2_2.jpg" alt="Bedroom2 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bedroom2 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_s_l2_daughter_bedroom_1.jpg" data-title="Pattaya Rekha — Type S, Level 2 — Daughter Bedroom 1">
+          <img src="pano_all/rekha_s_l2_daughter_bedroom_1.jpg" alt="Daughter Bedroom 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Daughter Bedroom 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_s_l2_daughter_bedroom_2.jpg" data-title="Pattaya Rekha — Type S, Level 2 — Daughter Bedroom 2">
+          <img src="pano_all/rekha_s_l2_daughter_bedroom_2.jpg" alt="Daughter Bedroom 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Daughter Bedroom 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_s_l2_family_area.jpg" data-title="Pattaya Rekha — Type S, Level 2 — Family Area">
+          <img src="pano_all/rekha_s_l2_family_area.jpg" alt="Family Area" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Family Area</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_s_l2_masterbedroom_1.jpg" data-title="Pattaya Rekha — Type S, Level 2 — Masterbedroom 1">
+          <img src="pano_all/rekha_s_l2_masterbedroom_1.jpg" alt="Masterbedroom 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Masterbedroom 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_s_l2_masterbedroom_2.jpg" data-title="Pattaya Rekha — Type S, Level 2 — Masterbedroom 2">
+          <img src="pano_all/rekha_s_l2_masterbedroom_2.jpg" alt="Masterbedroom 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Masterbedroom 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_s_l2_bathroom_daughter.jpg" data-title="Pattaya Rekha — Type S, Level 2 — Bathroom Daughter">
+          <img src="pano_all/rekha_s_l2_bathroom_daughter.jpg" alt="Bathroom Daughter" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bathroom Daughter</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_s_l2_bathroom_master.jpg" data-title="Pattaya Rekha — Type S, Level 2 — Bathroom Master">
+          <img src="pano_all/rekha_s_l2_bathroom_master.jpg" alt="Bathroom Master" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bathroom Master</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rekha_s_l2_bathroom_son.jpg" data-title="Pattaya Rekha — Type S, Level 2 — Bathroom Son">
+          <img src="pano_all/rekha_s_l2_bathroom_son.jpg" alt="Bathroom Son" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bathroom Son</div>
+        </div>
+      </div>
+      <div class="carousel-arrow carousel-next" data-target="rekha-s-l2">&#10095;</div>
+      </div>
+      </div>
+      </div>
+<h3 style="font-family:var(--serif);font-size:1.3rem;font-weight:400;color:var(--text);margin:44px 0 4px;">Rama9</h3>
+      <div class="pano-house">
+      <div class="project-header" style="margin-top:8px;">
+        <h4 style="font-family:var(--serif);font-size:1.05rem;font-weight:400;color:var(--text);">Rama9 Type A</h4>
+        <div class="pano-floor-tabs">
+          <button type="button" class="pano-floor-tab active" data-house="rama9-type-a" data-floor-target="rama9-a-fl1">Floor 1</button>
+          <button type="button" class="pano-floor-tab" data-house="rama9-type-a" data-floor-target="rama9-a-fl2">Floor 2</button>
+        </div>
+      </div>
+      <div class="pano-floor-panel" data-house="rama9-type-a" data-album-panel="rama9-a-fl1" style="display:block;">
+      <div class="carousel-wrap">
+      <div class="carousel-arrow carousel-prev" data-target="rama9-a-fl1">&#10094;</div>
+      <div class="pano-grid" data-album="rama9-a-fl1">
+        <div class="pano-card" data-src="pano_all/rama9_a_fl1_bedroom_1.jpg" data-title="Rama9 Type A, Floor 1 — Bedroom 1">
+          <img src="pano_all/rama9_a_fl1_bedroom_1.jpg" alt="Bedroom 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bedroom 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_a_fl1_front_1.jpg" data-title="Rama9 Type A, Floor 1 — Front 1">
+          <img src="pano_all/rama9_a_fl1_front_1.jpg" alt="Front 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Front 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_a_fl1_front_2.jpg" data-title="Rama9 Type A, Floor 1 — Front 2">
+          <img src="pano_all/rama9_a_fl1_front_2.jpg" alt="Front 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Front 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_a_fl1_livingroom_1.jpg" data-title="Rama9 Type A, Floor 1 — Livingroom 1">
+          <img src="pano_all/rama9_a_fl1_livingroom_1.jpg" alt="Livingroom 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_a_fl1_livingroom_2.jpg" data-title="Rama9 Type A, Floor 1 — Livingroom 2">
+          <img src="pano_all/rama9_a_fl1_livingroom_2.jpg" alt="Livingroom 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_a_fl1_livingroom_3.jpg" data-title="Rama9 Type A, Floor 1 — Livingroom 3">
+          <img src="pano_all/rama9_a_fl1_livingroom_3.jpg" alt="Livingroom 3" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 3</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_a_fl1_livingroom_4.jpg" data-title="Rama9 Type A, Floor 1 — Livingroom 4">
+          <img src="pano_all/rama9_a_fl1_livingroom_4.jpg" alt="Livingroom 4" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 4</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_a_fl1_livingroom_5.jpg" data-title="Rama9 Type A, Floor 1 — Livingroom 5">
+          <img src="pano_all/rama9_a_fl1_livingroom_5.jpg" alt="Livingroom 5" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 5</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_a_fl1_livingroom_6.jpg" data-title="Rama9 Type A, Floor 1 — Livingroom 6">
+          <img src="pano_all/rama9_a_fl1_livingroom_6.jpg" alt="Livingroom 6" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 6</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_a_fl1_livingroom_7.jpg" data-title="Rama9 Type A, Floor 1 — Livingroom 7">
+          <img src="pano_all/rama9_a_fl1_livingroom_7.jpg" alt="Livingroom 7" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 7</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_a_fl1_bathroom.jpg" data-title="Rama9 Type A, Floor 1 — Bathroom">
+          <img src="pano_all/rama9_a_fl1_bathroom.jpg" alt="Bathroom" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bathroom</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_a_fl1_powder_1.jpg" data-title="Rama9 Type A, Floor 1 — Powder 1">
+          <img src="pano_all/rama9_a_fl1_powder_1.jpg" alt="Powder 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Powder 1</div>
+        </div>
+      </div>
+      <div class="carousel-arrow carousel-next" data-target="rama9-a-fl1">&#10095;</div>
+      </div>
+      </div>
+      <div class="pano-floor-panel" data-house="rama9-type-a" data-album-panel="rama9-a-fl2" style="display:none;">
+      <div class="carousel-wrap">
+      <div class="carousel-arrow carousel-prev" data-target="rama9-a-fl2">&#10094;</div>
+      <div class="pano-grid" data-album="rama9-a-fl2">
+        <div class="pano-card" data-src="pano_all/rama9_a_fl2_bath_master_1.jpg" data-title="Rama9 Type A, Floor 2 — Bath Master 1">
+          <img src="pano_all/rama9_a_fl2_bath_master_1.jpg" alt="Bath Master 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bath Master 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_a_fl2_bedroom2_1.jpg" data-title="Rama9 Type A, Floor 2 — Bedroom2 1">
+          <img src="pano_all/rama9_a_fl2_bedroom2_1.jpg" alt="Bedroom2 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bedroom2 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_a_fl2_bedroom2_2.jpg" data-title="Rama9 Type A, Floor 2 — Bedroom2 2">
+          <img src="pano_all/rama9_a_fl2_bedroom2_2.jpg" alt="Bedroom2 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bedroom2 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_a_fl2_bedroom3_1.jpg" data-title="Rama9 Type A, Floor 2 — Bedroom3 1">
+          <img src="pano_all/rama9_a_fl2_bedroom3_1.jpg" alt="Bedroom3 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bedroom3 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_a_fl2_bedroom3_2.jpg" data-title="Rama9 Type A, Floor 2 — Bedroom3 2">
+          <img src="pano_all/rama9_a_fl2_bedroom3_2.jpg" alt="Bedroom3 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bedroom3 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_a_fl2_bedroom4_1.jpg" data-title="Rama9 Type A, Floor 2 — Bedroom4 1">
+          <img src="pano_all/rama9_a_fl2_bedroom4_1.jpg" alt="Bedroom4 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bedroom4 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_a_fl2_bedroom4_2.jpg" data-title="Rama9 Type A, Floor 2 — Bedroom4 2">
+          <img src="pano_all/rama9_a_fl2_bedroom4_2.jpg" alt="Bedroom4 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bedroom4 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_a_fl2_livingroom_1.jpg" data-title="Rama9 Type A, Floor 2 — Livingroom 1">
+          <img src="pano_all/rama9_a_fl2_livingroom_1.jpg" alt="Livingroom 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_a_fl2_livingroom_2.jpg" data-title="Rama9 Type A, Floor 2 — Livingroom 2">
+          <img src="pano_all/rama9_a_fl2_livingroom_2.jpg" alt="Livingroom 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_a_fl2_livingroom_3.jpg" data-title="Rama9 Type A, Floor 2 — Livingroom 3">
+          <img src="pano_all/rama9_a_fl2_livingroom_3.jpg" alt="Livingroom 3" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 3</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_a_fl2_livingroom_4.jpg" data-title="Rama9 Type A, Floor 2 — Livingroom 4">
+          <img src="pano_all/rama9_a_fl2_livingroom_4.jpg" alt="Livingroom 4" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 4</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_a_fl2_masterbedroom_1.jpg" data-title="Rama9 Type A, Floor 2 — Masterbedroom 1">
+          <img src="pano_all/rama9_a_fl2_masterbedroom_1.jpg" alt="Masterbedroom 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Masterbedroom 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_a_fl2_masterbedroom_2.jpg" data-title="Rama9 Type A, Floor 2 — Masterbedroom 2">
+          <img src="pano_all/rama9_a_fl2_masterbedroom_2.jpg" alt="Masterbedroom 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Masterbedroom 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_a_fl2_masterbedroom_3.jpg" data-title="Rama9 Type A, Floor 2 — Masterbedroom 3">
+          <img src="pano_all/rama9_a_fl2_masterbedroom_3.jpg" alt="Masterbedroom 3" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Masterbedroom 3</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_a_fl2_masterbedroom_4.jpg" data-title="Rama9 Type A, Floor 2 — Masterbedroom 4">
+          <img src="pano_all/rama9_a_fl2_masterbedroom_4.jpg" alt="Masterbedroom 4" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Masterbedroom 4</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_a_fl2_bathroom_2.jpg" data-title="Rama9 Type A, Floor 2 — Bathroom 2">
+          <img src="pano_all/rama9_a_fl2_bathroom_2.jpg" alt="Bathroom 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bathroom 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_a_fl2_bathroom_3.jpg" data-title="Rama9 Type A, Floor 2 — Bathroom 3">
+          <img src="pano_all/rama9_a_fl2_bathroom_3.jpg" alt="Bathroom 3" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bathroom 3</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_a_fl2_bathroom_4.jpg" data-title="Rama9 Type A, Floor 2 — Bathroom 4">
+          <img src="pano_all/rama9_a_fl2_bathroom_4.jpg" alt="Bathroom 4" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bathroom 4</div>
+        </div>
+      </div>
+      <div class="carousel-arrow carousel-next" data-target="rama9-a-fl2">&#10095;</div>
+      </div>
+      </div>
+      </div>
+
+      <div class="pano-house">
+      <div class="project-header" style="margin-top:8px;">
+        <h4 style="font-family:var(--serif);font-size:1.05rem;font-weight:400;color:var(--text);">Rama9 Type XL</h4>
+        <div class="pano-floor-tabs">
+          <button type="button" class="pano-floor-tab active" data-house="rama9-type-xl" data-floor-target="rama9-xl-fl1">Floor 1</button>
+          <button type="button" class="pano-floor-tab" data-house="rama9-type-xl" data-floor-target="rama9-xl-fl2">Floor 2</button>
+          <button type="button" class="pano-floor-tab" data-house="rama9-type-xl" data-floor-target="rama9-xl-fl3">Floor 3</button>
+        </div>
+      </div>
+      <div class="pano-floor-panel" data-house="rama9-type-xl" data-album-panel="rama9-xl-fl1" style="display:block;">
+      <div class="carousel-wrap">
+      <div class="carousel-arrow carousel-prev" data-target="rama9-xl-fl1">&#10094;</div>
+      <div class="pano-grid" data-album="rama9-xl-fl1">
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl1_bedroom_1.jpg" data-title="Rama9 Type XL, Floor 1 — Bedroom 1">
+          <img src="pano_all/rama9_xl_fl1_bedroom_1.jpg" alt="Bedroom 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bedroom 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl1_bedroom_2.jpg" data-title="Rama9 Type XL, Floor 1 — Bedroom 2">
+          <img src="pano_all/rama9_xl_fl1_bedroom_2.jpg" alt="Bedroom 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bedroom 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl1_bedroom_3.jpg" data-title="Rama9 Type XL, Floor 1 — Bedroom 3">
+          <img src="pano_all/rama9_xl_fl1_bedroom_3.jpg" alt="Bedroom 3" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bedroom 3</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl1_bedroom_4.jpg" data-title="Rama9 Type XL, Floor 1 — Bedroom 4">
+          <img src="pano_all/rama9_xl_fl1_bedroom_4.jpg" alt="Bedroom 4" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bedroom 4</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl1_bedroom_5.jpg" data-title="Rama9 Type XL, Floor 1 — Bedroom 5">
+          <img src="pano_all/rama9_xl_fl1_bedroom_5.jpg" alt="Bedroom 5" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bedroom 5</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl1_bedroom_6.jpg" data-title="Rama9 Type XL, Floor 1 — Bedroom 6">
+          <img src="pano_all/rama9_xl_fl1_bedroom_6.jpg" alt="Bedroom 6" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bedroom 6</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl1_front_1.jpg" data-title="Rama9 Type XL, Floor 1 — Front 1">
+          <img src="pano_all/rama9_xl_fl1_front_1.jpg" alt="Front 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Front 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl1_front_2.jpg" data-title="Rama9 Type XL, Floor 1 — Front 2">
+          <img src="pano_all/rama9_xl_fl1_front_2.jpg" alt="Front 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Front 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl1_front_3.jpg" data-title="Rama9 Type XL, Floor 1 — Front 3">
+          <img src="pano_all/rama9_xl_fl1_front_3.jpg" alt="Front 3" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Front 3</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl1_front_b_1.jpg" data-title="Rama9 Type XL, Floor 1 — Front B 1">
+          <img src="pano_all/rama9_xl_fl1_front_b_1.jpg" alt="Front B 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Front B 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl1_front_b_2.jpg" data-title="Rama9 Type XL, Floor 1 — Front B 2">
+          <img src="pano_all/rama9_xl_fl1_front_b_2.jpg" alt="Front B 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Front B 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl1_front_b_3.jpg" data-title="Rama9 Type XL, Floor 1 — Front B 3">
+          <img src="pano_all/rama9_xl_fl1_front_b_3.jpg" alt="Front B 3" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Front B 3</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl1_front_b_4.jpg" data-title="Rama9 Type XL, Floor 1 — Front B 4">
+          <img src="pano_all/rama9_xl_fl1_front_b_4.jpg" alt="Front B 4" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Front B 4</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl1_garage_1.jpg" data-title="Rama9 Type XL, Floor 1 — Garage 1">
+          <img src="pano_all/rama9_xl_fl1_garage_1.jpg" alt="Garage 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Garage 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl1_garage_2.jpg" data-title="Rama9 Type XL, Floor 1 — Garage 2">
+          <img src="pano_all/rama9_xl_fl1_garage_2.jpg" alt="Garage 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Garage 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl1_interior_1.jpg" data-title="Rama9 Type XL, Floor 1 — Interior 1">
+          <img src="pano_all/rama9_xl_fl1_interior_1.jpg" alt="Interior 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Interior 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl1_interior_10.jpg" data-title="Rama9 Type XL, Floor 1 — Interior 10">
+          <img src="pano_all/rama9_xl_fl1_interior_10.jpg" alt="Interior 10" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Interior 10</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl1_interior_2.jpg" data-title="Rama9 Type XL, Floor 1 — Interior 2">
+          <img src="pano_all/rama9_xl_fl1_interior_2.jpg" alt="Interior 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Interior 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl1_interior_3.jpg" data-title="Rama9 Type XL, Floor 1 — Interior 3">
+          <img src="pano_all/rama9_xl_fl1_interior_3.jpg" alt="Interior 3" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Interior 3</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl1_interior_4.jpg" data-title="Rama9 Type XL, Floor 1 — Interior 4">
+          <img src="pano_all/rama9_xl_fl1_interior_4.jpg" alt="Interior 4" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Interior 4</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl1_interior_5.jpg" data-title="Rama9 Type XL, Floor 1 — Interior 5">
+          <img src="pano_all/rama9_xl_fl1_interior_5.jpg" alt="Interior 5" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Interior 5</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl1_interior_6.jpg" data-title="Rama9 Type XL, Floor 1 — Interior 6">
+          <img src="pano_all/rama9_xl_fl1_interior_6.jpg" alt="Interior 6" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Interior 6</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl1_interior_7.jpg" data-title="Rama9 Type XL, Floor 1 — Interior 7">
+          <img src="pano_all/rama9_xl_fl1_interior_7.jpg" alt="Interior 7" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Interior 7</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl1_interior_8.jpg" data-title="Rama9 Type XL, Floor 1 — Interior 8">
+          <img src="pano_all/rama9_xl_fl1_interior_8.jpg" alt="Interior 8" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Interior 8</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl1_interior_9.jpg" data-title="Rama9 Type XL, Floor 1 — Interior 9">
+          <img src="pano_all/rama9_xl_fl1_interior_9.jpg" alt="Interior 9" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Interior 9</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl1_lounge_1.jpg" data-title="Rama9 Type XL, Floor 1 — Lounge 1">
+          <img src="pano_all/rama9_xl_fl1_lounge_1.jpg" alt="Lounge 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Lounge 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl1_lounge_2.jpg" data-title="Rama9 Type XL, Floor 1 — Lounge 2">
+          <img src="pano_all/rama9_xl_fl1_lounge_2.jpg" alt="Lounge 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Lounge 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl1_lounge_3.jpg" data-title="Rama9 Type XL, Floor 1 — Lounge 3">
+          <img src="pano_all/rama9_xl_fl1_lounge_3.jpg" alt="Lounge 3" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Lounge 3</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl1_lounge_4.jpg" data-title="Rama9 Type XL, Floor 1 — Lounge 4">
+          <img src="pano_all/rama9_xl_fl1_lounge_4.jpg" alt="Lounge 4" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Lounge 4</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl1_pool_1.jpg" data-title="Rama9 Type XL, Floor 1 — Pool 1">
+          <img src="pano_all/rama9_xl_fl1_pool_1.jpg" alt="Pool 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Pool 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl1_pool_2.jpg" data-title="Rama9 Type XL, Floor 1 — Pool 2">
+          <img src="pano_all/rama9_xl_fl1_pool_2.jpg" alt="Pool 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Pool 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl1_pool_3.jpg" data-title="Rama9 Type XL, Floor 1 — Pool 3">
+          <img src="pano_all/rama9_xl_fl1_pool_3.jpg" alt="Pool 3" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Pool 3</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl1_pool_4.jpg" data-title="Rama9 Type XL, Floor 1 — Pool 4">
+          <img src="pano_all/rama9_xl_fl1_pool_4.jpg" alt="Pool 4" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Pool 4</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl1_pool_5.jpg" data-title="Rama9 Type XL, Floor 1 — Pool 5">
+          <img src="pano_all/rama9_xl_fl1_pool_5.jpg" alt="Pool 5" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Pool 5</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl1_pool_6.jpg" data-title="Rama9 Type XL, Floor 1 — Pool 6">
+          <img src="pano_all/rama9_xl_fl1_pool_6.jpg" alt="Pool 6" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Pool 6</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl1_bathroom_1.jpg" data-title="Rama9 Type XL, Floor 1 — Bathroom 1">
+          <img src="pano_all/rama9_xl_fl1_bathroom_1.jpg" alt="Bathroom 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bathroom 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl1_bathroom_2.jpg" data-title="Rama9 Type XL, Floor 1 — Bathroom 2">
+          <img src="pano_all/rama9_xl_fl1_bathroom_2.jpg" alt="Bathroom 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bathroom 2</div>
+        </div>
+      </div>
+      <div class="carousel-arrow carousel-next" data-target="rama9-xl-fl1">&#10095;</div>
+      </div>
+      </div>
+      <div class="pano-floor-panel" data-house="rama9-type-xl" data-album-panel="rama9-xl-fl2" style="display:none;">
+      <div class="carousel-wrap">
+      <div class="carousel-arrow carousel-prev" data-target="rama9-xl-fl2">&#10094;</div>
+      <div class="pano-grid" data-album="rama9-xl-fl2">
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl2_bedroom_a_1.jpg" data-title="Rama9 Type XL, Floor 2 — Bedroom A 1">
+          <img src="pano_all/rama9_xl_fl2_bedroom_a_1.jpg" alt="Bedroom A 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bedroom A 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl2_bedroom_a_2.jpg" data-title="Rama9 Type XL, Floor 2 — Bedroom A 2">
+          <img src="pano_all/rama9_xl_fl2_bedroom_a_2.jpg" alt="Bedroom A 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bedroom A 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl2_bedroom_b_1.jpg" data-title="Rama9 Type XL, Floor 2 — Bedroom B 1">
+          <img src="pano_all/rama9_xl_fl2_bedroom_b_1.jpg" alt="Bedroom B 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bedroom B 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl2_bedroom_b_2.jpg" data-title="Rama9 Type XL, Floor 2 — Bedroom B 2">
+          <img src="pano_all/rama9_xl_fl2_bedroom_b_2.jpg" alt="Bedroom B 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bedroom B 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl2_living_1.jpg" data-title="Rama9 Type XL, Floor 2 — Living 1">
+          <img src="pano_all/rama9_xl_fl2_living_1.jpg" alt="Living 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Living 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl2_living_2.jpg" data-title="Rama9 Type XL, Floor 2 — Living 2">
+          <img src="pano_all/rama9_xl_fl2_living_2.jpg" alt="Living 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Living 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl2_living_3.jpg" data-title="Rama9 Type XL, Floor 2 — Living 3">
+          <img src="pano_all/rama9_xl_fl2_living_3.jpg" alt="Living 3" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Living 3</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl2_living_4.jpg" data-title="Rama9 Type XL, Floor 2 — Living 4">
+          <img src="pano_all/rama9_xl_fl2_living_4.jpg" alt="Living 4" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Living 4</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl2_living_5.jpg" data-title="Rama9 Type XL, Floor 2 — Living 5">
+          <img src="pano_all/rama9_xl_fl2_living_5.jpg" alt="Living 5" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Living 5</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl2_living_6.jpg" data-title="Rama9 Type XL, Floor 2 — Living 6">
+          <img src="pano_all/rama9_xl_fl2_living_6.jpg" alt="Living 6" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Living 6</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl2_masterbed_1.jpg" data-title="Rama9 Type XL, Floor 2 — Masterbed 1">
+          <img src="pano_all/rama9_xl_fl2_masterbed_1.jpg" alt="Masterbed 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Masterbed 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl2_masterbed_2.jpg" data-title="Rama9 Type XL, Floor 2 — Masterbed 2">
+          <img src="pano_all/rama9_xl_fl2_masterbed_2.jpg" alt="Masterbed 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Masterbed 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl2_masterbed_3.jpg" data-title="Rama9 Type XL, Floor 2 — Masterbed 3">
+          <img src="pano_all/rama9_xl_fl2_masterbed_3.jpg" alt="Masterbed 3" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Masterbed 3</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl2_masterbed_4.jpg" data-title="Rama9 Type XL, Floor 2 — Masterbed 4">
+          <img src="pano_all/rama9_xl_fl2_masterbed_4.jpg" alt="Masterbed 4" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Masterbed 4</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl2_sauna_1.jpg" data-title="Rama9 Type XL, Floor 2 — Sauna 1">
+          <img src="pano_all/rama9_xl_fl2_sauna_1.jpg" alt="Sauna 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Sauna 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl2_sauna_2.jpg" data-title="Rama9 Type XL, Floor 2 — Sauna 2">
+          <img src="pano_all/rama9_xl_fl2_sauna_2.jpg" alt="Sauna 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Sauna 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl2_sauna_3.jpg" data-title="Rama9 Type XL, Floor 2 — Sauna 3">
+          <img src="pano_all/rama9_xl_fl2_sauna_3.jpg" alt="Sauna 3" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Sauna 3</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl2_sauna_4.jpg" data-title="Rama9 Type XL, Floor 2 — Sauna 4">
+          <img src="pano_all/rama9_xl_fl2_sauna_4.jpg" alt="Sauna 4" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Sauna 4</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl2_walk_in_1.jpg" data-title="Rama9 Type XL, Floor 2 — Walk In 1">
+          <img src="pano_all/rama9_xl_fl2_walk_in_1.jpg" alt="Walk In 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Walk In 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl2_walk_in_2.jpg" data-title="Rama9 Type XL, Floor 2 — Walk In 2">
+          <img src="pano_all/rama9_xl_fl2_walk_in_2.jpg" alt="Walk In 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Walk In 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl2_walk_in_3.jpg" data-title="Rama9 Type XL, Floor 2 — Walk In 3">
+          <img src="pano_all/rama9_xl_fl2_walk_in_3.jpg" alt="Walk In 3" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Walk In 3</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl2_bathroom_a.jpg" data-title="Rama9 Type XL, Floor 2 — Bathroom A">
+          <img src="pano_all/rama9_xl_fl2_bathroom_a.jpg" alt="Bathroom A" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bathroom A</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl2_bathroom_b.jpg" data-title="Rama9 Type XL, Floor 2 — Bathroom B">
+          <img src="pano_all/rama9_xl_fl2_bathroom_b.jpg" alt="Bathroom B" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bathroom B</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl2_bathroom_master.jpg" data-title="Rama9 Type XL, Floor 2 — Bathroom Master">
+          <img src="pano_all/rama9_xl_fl2_bathroom_master.jpg" alt="Bathroom Master" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bathroom Master</div>
+        </div>
+      </div>
+      <div class="carousel-arrow carousel-next" data-target="rama9-xl-fl2">&#10095;</div>
+      </div>
+      </div>
+      <div class="pano-floor-panel" data-house="rama9-type-xl" data-album-panel="rama9-xl-fl3" style="display:none;">
+      <div class="carousel-wrap">
+      <div class="carousel-arrow carousel-prev" data-target="rama9-xl-fl3">&#10094;</div>
+      <div class="pano-grid" data-album="rama9-xl-fl3">
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl3_bedroom_1.jpg" data-title="Rama9 Type XL, Floor 3 — Bedroom 1">
+          <img src="pano_all/rama9_xl_fl3_bedroom_1.jpg" alt="Bedroom 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bedroom 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl3_bedroom_2.jpg" data-title="Rama9 Type XL, Floor 3 — Bedroom 2">
+          <img src="pano_all/rama9_xl_fl3_bedroom_2.jpg" alt="Bedroom 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bedroom 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl3_corridor_1.jpg" data-title="Rama9 Type XL, Floor 3 — Corridor 1">
+          <img src="pano_all/rama9_xl_fl3_corridor_1.jpg" alt="Corridor 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Corridor 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl3_corridor_2.jpg" data-title="Rama9 Type XL, Floor 3 — Corridor 2">
+          <img src="pano_all/rama9_xl_fl3_corridor_2.jpg" alt="Corridor 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Corridor 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl3_corridor_3.jpg" data-title="Rama9 Type XL, Floor 3 — Corridor 3">
+          <img src="pano_all/rama9_xl_fl3_corridor_3.jpg" alt="Corridor 3" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Corridor 3</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl3_corridor_4.jpg" data-title="Rama9 Type XL, Floor 3 — Corridor 4">
+          <img src="pano_all/rama9_xl_fl3_corridor_4.jpg" alt="Corridor 4" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Corridor 4</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl3_livingroom_1.jpg" data-title="Rama9 Type XL, Floor 3 — Livingroom 1">
+          <img src="pano_all/rama9_xl_fl3_livingroom_1.jpg" alt="Livingroom 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl3_livingroom_2.jpg" data-title="Rama9 Type XL, Floor 3 — Livingroom 2">
+          <img src="pano_all/rama9_xl_fl3_livingroom_2.jpg" alt="Livingroom 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Livingroom 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl3_out_1.jpg" data-title="Rama9 Type XL, Floor 3 — Out 1">
+          <img src="pano_all/rama9_xl_fl3_out_1.jpg" alt="Out 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Out 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl3_out_2.jpg" data-title="Rama9 Type XL, Floor 3 — Out 2">
+          <img src="pano_all/rama9_xl_fl3_out_2.jpg" alt="Out 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Out 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl3_walk_in_1.jpg" data-title="Rama9 Type XL, Floor 3 — Walk In 1">
+          <img src="pano_all/rama9_xl_fl3_walk_in_1.jpg" alt="Walk In 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Walk In 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl3_walk_in_2.jpg" data-title="Rama9 Type XL, Floor 3 — Walk In 2">
+          <img src="pano_all/rama9_xl_fl3_walk_in_2.jpg" alt="Walk In 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Walk In 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl3_walk_in_3.jpg" data-title="Rama9 Type XL, Floor 3 — Walk In 3">
+          <img src="pano_all/rama9_xl_fl3_walk_in_3.jpg" alt="Walk In 3" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Walk In 3</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl3_bathroom_1.jpg" data-title="Rama9 Type XL, Floor 3 — Bathroom 1">
+          <img src="pano_all/rama9_xl_fl3_bathroom_1.jpg" alt="Bathroom 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bathroom 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl3_bathroom_2.jpg" data-title="Rama9 Type XL, Floor 3 — Bathroom 2">
+          <img src="pano_all/rama9_xl_fl3_bathroom_2.jpg" alt="Bathroom 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bathroom 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/rama9_xl_fl3_bathroom_3.jpg" data-title="Rama9 Type XL, Floor 3 — Bathroom 3">
+          <img src="pano_all/rama9_xl_fl3_bathroom_3.jpg" alt="Bathroom 3" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">Bathroom 3</div>
+        </div>
+      </div>
+      <div class="carousel-arrow carousel-next" data-target="rama9-xl-fl3">&#10095;</div>
+      </div>
+      </div>
+      </div>
+<h3 style="font-family:var(--serif);font-size:1.3rem;font-weight:400;color:var(--text);margin:44px 0 4px;">Sri Panwa</h3>
+      <div class="pano-house">
+      <div class="project-header" style="margin-top:8px;">
+        <h4 style="font-family:var(--serif);font-size:1.05rem;font-weight:400;color:var(--text);">Sri Panwa — Type L</h4>
+        <div class="pano-floor-tabs">
+          <button type="button" class="pano-floor-tab active" data-house="sripanwa-type-l" data-floor-target="sripanwa-l-fl1">Floor 1</button>
+          <button type="button" class="pano-floor-tab" data-house="sripanwa-type-l" data-floor-target="sripanwa-l-fl2">Floor 2</button>
+        </div>
+      </div>
+      <div class="pano-floor-panel" data-house="sripanwa-type-l" data-album-panel="sripanwa-l-fl1" style="display:block;">
+      <div class="carousel-wrap">
+      <div class="carousel-arrow carousel-prev" data-target="sripanwa-l-fl1">&#10094;</div>
+      <div class="pano-grid" data-album="sripanwa-l-fl1">
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl1_view_000.jpg" data-title="Sri Panwa — Type L, Floor 1 — View 1">
+          <img src="pano_all/sripanwa_l_fl1_view_000.jpg" alt="View 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl1_view_001.jpg" data-title="Sri Panwa — Type L, Floor 1 — View 2">
+          <img src="pano_all/sripanwa_l_fl1_view_001.jpg" alt="View 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl1_view_002.jpg" data-title="Sri Panwa — Type L, Floor 1 — View 3">
+          <img src="pano_all/sripanwa_l_fl1_view_002.jpg" alt="View 3" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 3</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl1_view_003.jpg" data-title="Sri Panwa — Type L, Floor 1 — View 4">
+          <img src="pano_all/sripanwa_l_fl1_view_003.jpg" alt="View 4" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 4</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl1_view_004.jpg" data-title="Sri Panwa — Type L, Floor 1 — View 5">
+          <img src="pano_all/sripanwa_l_fl1_view_004.jpg" alt="View 5" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 5</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl1_view_005.jpg" data-title="Sri Panwa — Type L, Floor 1 — View 6">
+          <img src="pano_all/sripanwa_l_fl1_view_005.jpg" alt="View 6" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 6</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl1_view_006.jpg" data-title="Sri Panwa — Type L, Floor 1 — View 7">
+          <img src="pano_all/sripanwa_l_fl1_view_006.jpg" alt="View 7" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 7</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl1_view_007.jpg" data-title="Sri Panwa — Type L, Floor 1 — View 8">
+          <img src="pano_all/sripanwa_l_fl1_view_007.jpg" alt="View 8" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 8</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl1_view_008.jpg" data-title="Sri Panwa — Type L, Floor 1 — View 9">
+          <img src="pano_all/sripanwa_l_fl1_view_008.jpg" alt="View 9" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 9</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl1_view_009.jpg" data-title="Sri Panwa — Type L, Floor 1 — View 10">
+          <img src="pano_all/sripanwa_l_fl1_view_009.jpg" alt="View 10" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 10</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl1_view_010.jpg" data-title="Sri Panwa — Type L, Floor 1 — View 11">
+          <img src="pano_all/sripanwa_l_fl1_view_010.jpg" alt="View 11" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 11</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl1_view_011.jpg" data-title="Sri Panwa — Type L, Floor 1 — View 12">
+          <img src="pano_all/sripanwa_l_fl1_view_011.jpg" alt="View 12" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 12</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl1_view_012.jpg" data-title="Sri Panwa — Type L, Floor 1 — View 13">
+          <img src="pano_all/sripanwa_l_fl1_view_012.jpg" alt="View 13" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 13</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl1_view_013.jpg" data-title="Sri Panwa — Type L, Floor 1 — View 14">
+          <img src="pano_all/sripanwa_l_fl1_view_013.jpg" alt="View 14" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 14</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl1_view_014.jpg" data-title="Sri Panwa — Type L, Floor 1 — View 15">
+          <img src="pano_all/sripanwa_l_fl1_view_014.jpg" alt="View 15" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 15</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl1_view_015.jpg" data-title="Sri Panwa — Type L, Floor 1 — View 16">
+          <img src="pano_all/sripanwa_l_fl1_view_015.jpg" alt="View 16" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 16</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl1_view_016.jpg" data-title="Sri Panwa — Type L, Floor 1 — View 17">
+          <img src="pano_all/sripanwa_l_fl1_view_016.jpg" alt="View 17" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 17</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl1_view_017.jpg" data-title="Sri Panwa — Type L, Floor 1 — View 18">
+          <img src="pano_all/sripanwa_l_fl1_view_017.jpg" alt="View 18" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 18</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl1_view_018.jpg" data-title="Sri Panwa — Type L, Floor 1 — View 19">
+          <img src="pano_all/sripanwa_l_fl1_view_018.jpg" alt="View 19" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 19</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl1_view_019.jpg" data-title="Sri Panwa — Type L, Floor 1 — View 20">
+          <img src="pano_all/sripanwa_l_fl1_view_019.jpg" alt="View 20" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 20</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl1_view_020.jpg" data-title="Sri Panwa — Type L, Floor 1 — View 21">
+          <img src="pano_all/sripanwa_l_fl1_view_020.jpg" alt="View 21" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 21</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl1_view_021.jpg" data-title="Sri Panwa — Type L, Floor 1 — View 22">
+          <img src="pano_all/sripanwa_l_fl1_view_021.jpg" alt="View 22" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 22</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl1_view_022.jpg" data-title="Sri Panwa — Type L, Floor 1 — View 23">
+          <img src="pano_all/sripanwa_l_fl1_view_022.jpg" alt="View 23" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 23</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl1_view_023.jpg" data-title="Sri Panwa — Type L, Floor 1 — View 24">
+          <img src="pano_all/sripanwa_l_fl1_view_023.jpg" alt="View 24" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 24</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl1_view_024.jpg" data-title="Sri Panwa — Type L, Floor 1 — View 25">
+          <img src="pano_all/sripanwa_l_fl1_view_024.jpg" alt="View 25" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 25</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl1_view_025.jpg" data-title="Sri Panwa — Type L, Floor 1 — View 26">
+          <img src="pano_all/sripanwa_l_fl1_view_025.jpg" alt="View 26" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 26</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl1_view_026.jpg" data-title="Sri Panwa — Type L, Floor 1 — View 27">
+          <img src="pano_all/sripanwa_l_fl1_view_026.jpg" alt="View 27" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 27</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl1_view_027.jpg" data-title="Sri Panwa — Type L, Floor 1 — View 28">
+          <img src="pano_all/sripanwa_l_fl1_view_027.jpg" alt="View 28" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 28</div>
+        </div>
+      </div>
+      <div class="carousel-arrow carousel-next" data-target="sripanwa-l-fl1">&#10095;</div>
+      </div>
+      </div>
+      <div class="pano-floor-panel" data-house="sripanwa-type-l" data-album-panel="sripanwa-l-fl2" style="display:none;">
+      <div class="carousel-wrap">
+      <div class="carousel-arrow carousel-prev" data-target="sripanwa-l-fl2">&#10094;</div>
+      <div class="pano-grid" data-album="sripanwa-l-fl2">
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl2_view_001.jpg" data-title="Sri Panwa — Type L, Floor 2 — View 1">
+          <img src="pano_all/sripanwa_l_fl2_view_001.jpg" alt="View 1" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 1</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl2_view_002.jpg" data-title="Sri Panwa — Type L, Floor 2 — View 2">
+          <img src="pano_all/sripanwa_l_fl2_view_002.jpg" alt="View 2" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 2</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl2_view_003.jpg" data-title="Sri Panwa — Type L, Floor 2 — View 3">
+          <img src="pano_all/sripanwa_l_fl2_view_003.jpg" alt="View 3" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 3</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl2_view_004.jpg" data-title="Sri Panwa — Type L, Floor 2 — View 4">
+          <img src="pano_all/sripanwa_l_fl2_view_004.jpg" alt="View 4" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 4</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl2_view_005.jpg" data-title="Sri Panwa — Type L, Floor 2 — View 5">
+          <img src="pano_all/sripanwa_l_fl2_view_005.jpg" alt="View 5" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 5</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl2_view_006.jpg" data-title="Sri Panwa — Type L, Floor 2 — View 6">
+          <img src="pano_all/sripanwa_l_fl2_view_006.jpg" alt="View 6" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 6</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl2_view_007.jpg" data-title="Sri Panwa — Type L, Floor 2 — View 7">
+          <img src="pano_all/sripanwa_l_fl2_view_007.jpg" alt="View 7" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 7</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl2_view_008.jpg" data-title="Sri Panwa — Type L, Floor 2 — View 8">
+          <img src="pano_all/sripanwa_l_fl2_view_008.jpg" alt="View 8" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 8</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl2_view_009.jpg" data-title="Sri Panwa — Type L, Floor 2 — View 9">
+          <img src="pano_all/sripanwa_l_fl2_view_009.jpg" alt="View 9" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 9</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl2_view_010.jpg" data-title="Sri Panwa — Type L, Floor 2 — View 10">
+          <img src="pano_all/sripanwa_l_fl2_view_010.jpg" alt="View 10" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 10</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl2_view_011.jpg" data-title="Sri Panwa — Type L, Floor 2 — View 11">
+          <img src="pano_all/sripanwa_l_fl2_view_011.jpg" alt="View 11" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 11</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl2_view_012.jpg" data-title="Sri Panwa — Type L, Floor 2 — View 12">
+          <img src="pano_all/sripanwa_l_fl2_view_012.jpg" alt="View 12" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 12</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl2_view_013.jpg" data-title="Sri Panwa — Type L, Floor 2 — View 13">
+          <img src="pano_all/sripanwa_l_fl2_view_013.jpg" alt="View 13" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 13</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl2_view_014.jpg" data-title="Sri Panwa — Type L, Floor 2 — View 14">
+          <img src="pano_all/sripanwa_l_fl2_view_014.jpg" alt="View 14" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 14</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl2_view_015.jpg" data-title="Sri Panwa — Type L, Floor 2 — View 15">
+          <img src="pano_all/sripanwa_l_fl2_view_015.jpg" alt="View 15" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 15</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl2_view_016.jpg" data-title="Sri Panwa — Type L, Floor 2 — View 16">
+          <img src="pano_all/sripanwa_l_fl2_view_016.jpg" alt="View 16" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 16</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl2_view_017.jpg" data-title="Sri Panwa — Type L, Floor 2 — View 17">
+          <img src="pano_all/sripanwa_l_fl2_view_017.jpg" alt="View 17" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 17</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl2_view_018.jpg" data-title="Sri Panwa — Type L, Floor 2 — View 18">
+          <img src="pano_all/sripanwa_l_fl2_view_018.jpg" alt="View 18" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 18</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl2_view_019.jpg" data-title="Sri Panwa — Type L, Floor 2 — View 19">
+          <img src="pano_all/sripanwa_l_fl2_view_019.jpg" alt="View 19" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 19</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl2_view_020.jpg" data-title="Sri Panwa — Type L, Floor 2 — View 20">
+          <img src="pano_all/sripanwa_l_fl2_view_020.jpg" alt="View 20" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 20</div>
+        </div>
+        <div class="pano-card" data-src="pano_all/sripanwa_l_fl2_view_021.jpg" data-title="Sri Panwa — Type L, Floor 2 — View 21">
+          <img src="pano_all/sripanwa_l_fl2_view_021.jpg" alt="View 21" loading="lazy">
+          <div class="badge">&#10227; 360&deg;</div>
+          <div class="cap">View 21</div>
+        </div>
+      </div>
+      <div class="carousel-arrow carousel-next" data-target="sripanwa-l-fl2">&#10095;</div>
+      </div>
+      </div>
+      </div>
     </div>
-  </div>
-</section>
 
-<section id="portfolio">
-  <div class="wrap">
-    <h2>Portfolio</h2>
-
-    <!-- OZONE SIGNATURE -->
+    <div id="perspective"></div>
     <div class="project-block">
       <div class="project-header">
-        <h3>OZONE SIGNATURE Hotel &amp; Condo</h3>
-        <span>Architectural Visualization — Exterior, Interior &amp; Floor Plan</span>
+        <h3>OZONE SIGNATURE</h3>
       </div>
-      <div class="thumb-grid" data-gallery="ozone">
-        <div class="thumb"><img src="images/p01_0.jpg" alt="Front Facade & Entrance" data-cap="Front Facade & Entrance"><div class="cap">Front Facade & Entrance</div></div>
-        <div class="thumb"><img src="images/p02_0.jpg" alt="Hotel Pool Area" data-cap="Hotel Pool Area"><div class="cap">Hotel Pool Area</div></div>
-        <div class="thumb"><img src="images/p03_0.jpg" alt="Bird's-Eye View – Full Development" data-cap="Bird's-Eye View – Full Development"><div class="cap">Bird's-Eye View</div></div>
-        <div class="thumb"><img src="images/p04_0.jpg" alt="Condo Pool & Landscape" data-cap="Condo Pool & Landscape"><div class="cap">Condo Pool & Landscape</div></div>
-        <div class="thumb"><img src="images/p05_0.jpg" alt="Interior – Fitness Gym" data-cap="Interior – Fitness Gym"><div class="cap">Fitness Gym</div></div>
-        <div class="thumb"><img src="images/p06_0.jpg" alt="Interior – Lobby" data-cap="Interior – Lobby"><div class="cap">Lobby</div></div>
-        <div class="thumb"><img src="images/p07_0.jpg" alt="Interior – Restaurant" data-cap="Interior – Restaurant"><div class="cap">Restaurant</div></div>
-        <div class="thumb"><img src="images/p08_0.jpg" alt="Interior – Deluxe Room" data-cap="Interior – Deluxe Room"><div class="cap">Deluxe Room</div></div>
-        <div class="thumb"><img src="images/p09_0.jpg" alt="Interior – Deluxe Room (Alt. View)" data-cap="Interior – Deluxe Room (Alt. View)"><div class="cap">Deluxe Room (Alt.)</div></div>
-        <div class="thumb"><img src="images/p10_0.jpg" alt="Interior – President Suite Bedroom" data-cap="Interior – President Suite Bedroom"><div class="cap">President Suite Bedroom</div></div>
-        <div class="thumb"><img src="images/p11_0.jpg" alt="President Suite – Floor Plan Top View" data-cap="President Suite – Floor Plan Top View"><div class="cap">Floor Plan Top View</div></div>
+      <h4 style="font-family:var(--serif);font-size:1rem;font-weight:400;color:var(--text);margin:28px 0 12px;">Exterior</h4>
+      <div class="carousel-wrap">
+        <div class="carousel-arrow carousel-prev" data-target="ozone-ext">&#10094;</div>
+        <div class="thumb-grid" data-photo-group="ozone-ext">
+          <div class="thumb"><img src="images_real/01_front_far.jpg" alt="Front Facade (HD)" data-cap="Front Facade (HD)"><div class="cap">Front Facade (HD)</div></div>
+          <div class="thumb"><img src="images_real/07_hotel_pool_shot_1.jpg" alt="Hotel Pool (HD)" data-cap="Hotel Pool (HD)"><div class="cap">Hotel Pool (HD)</div></div>
+          <div class="thumb"><img src="images_real/birdeyeview_1.jpg" alt="Bird&#x27;s-Eye View (HD)" data-cap="Bird&#x27;s-Eye View (HD)"><div class="cap">Bird&#x27;s-Eye View (HD)</div></div>
+          <div class="thumb"><img src="images/p01_0.jpg" alt="Front Facade &amp; Entrance" data-cap="Front Facade &amp; Entrance"><div class="cap">Front Facade &amp; Entrance</div></div>
+          <div class="thumb"><img src="images/p02_0.jpg" alt="Hotel Pool Area" data-cap="Hotel Pool Area"><div class="cap">Hotel Pool Area</div></div>
+          <div class="thumb"><img src="images/p03_0.jpg" alt="Bird&#x27;s-Eye View — Full Development" data-cap="Bird&#x27;s-Eye View — Full Development"><div class="cap">Bird&#x27;s-Eye View — Full Development</div></div>
+          <div class="thumb"><img src="images_real2/EXTERIOR__OZONE_SIGNATURE__HOTEL__01_FRONT_FAR.jpg" alt="Front Facade — Far View" data-cap="Front Facade — Far View"><div class="cap">Front Facade — Far View</div></div>
+          <div class="thumb"><img src="images_real2/EXTERIOR__OZONE_SIGNATURE__HOTEL__02_FRONT_1.jpg" alt="Front Facade 1" data-cap="Front Facade 1"><div class="cap">Front Facade 1</div></div>
+          <div class="thumb"><img src="images_real2/EXTERIOR__OZONE_SIGNATURE__HOTEL__02_FRONT_2.jpg" alt="Front Facade 2" data-cap="Front Facade 2"><div class="cap">Front Facade 2</div></div>
+          <div class="thumb"><img src="images_real2/EXTERIOR__OZONE_SIGNATURE__HOTEL__03_FRONT_LOBBY_A.jpg" alt="Front Lobby A" data-cap="Front Lobby A"><div class="cap">Front Lobby A</div></div>
+          <div class="thumb"><img src="images_real2/EXTERIOR__OZONE_SIGNATURE__HOTEL__04_FRONT_LOBBY_B.jpg" alt="Front Lobby B" data-cap="Front Lobby B"><div class="cap">Front Lobby B</div></div>
+          <div class="thumb"><img src="images_real2/EXTERIOR__OZONE_SIGNATURE__HOTEL__05_DROPOFF_A.jpg" alt="Drop-off A" data-cap="Drop-off A"><div class="cap">Drop-off A</div></div>
+          <div class="thumb"><img src="images_real2/EXTERIOR__OZONE_SIGNATURE__HOTEL__06_DROPOFF_B.jpg" alt="Drop-off B" data-cap="Drop-off B"><div class="cap">Drop-off B</div></div>
+          <div class="thumb"><img src="images_real2/EXTERIOR__OZONE_SIGNATURE__HOTEL__06_DROPOFF_C.jpg" alt="Drop-off C" data-cap="Drop-off C"><div class="cap">Drop-off C</div></div>
+          <div class="thumb"><img src="images_real2/EXTERIOR__OZONE_SIGNATURE__HOTEL__07_HOTEL_POOL_SHOT_1.jpg" alt="Hotel Pool Shot 1" data-cap="Hotel Pool Shot 1"><div class="cap">Hotel Pool Shot 1</div></div>
+          <div class="thumb"><img src="images_real2/EXTERIOR__OZONE_SIGNATURE__HOTEL__07_HOTEL_POOL_SHOT_2.jpg" alt="Hotel Pool Shot 2" data-cap="Hotel Pool Shot 2"><div class="cap">Hotel Pool Shot 2</div></div>
+          <div class="thumb"><img src="images_real2/EXTERIOR__OZONE_SIGNATURE__HOTEL__07_HOTEL_POOL_SHOT_3.jpg" alt="Hotel Pool Shot 3" data-cap="Hotel Pool Shot 3"><div class="cap">Hotel Pool Shot 3</div></div>
+          <div class="thumb"><img src="images_real2/EXTERIOR__OZONE_SIGNATURE__HOTEL__07_HOTEL_POOL_SHOT_4.jpg" alt="Hotel Pool Shot 4" data-cap="Hotel Pool Shot 4"><div class="cap">Hotel Pool Shot 4</div></div>
+          <div class="thumb"><img src="images_real2/EXTERIOR__OZONE_SIGNATURE__HOTEL__07_HOTEL_POOL_SHOT_5.jpg" alt="Hotel Pool Shot 5" data-cap="Hotel Pool Shot 5"><div class="cap">Hotel Pool Shot 5</div></div>
+          <div class="thumb"><img src="images_real2/EXTERIOR__OZONE_SIGNATURE__HOTEL__07_HOTEL_POOL_SHOT_6.jpg" alt="Hotel Pool Shot 6" data-cap="Hotel Pool Shot 6"><div class="cap">Hotel Pool Shot 6</div></div>
+          <div class="thumb"><img src="images_real2/EXTERIOR__OZONE_SIGNATURE__HOTEL__BIRDEYEVIEW_1.jpg" alt="Bird&#x27;s-Eye View 1" data-cap="Bird&#x27;s-Eye View 1"><div class="cap">Bird&#x27;s-Eye View 1</div></div>
+          <div class="thumb"><img src="images_real2/EXTERIOR__OZONE_SIGNATURE__HOTEL__BIRDEYEVIEW_2.jpg" alt="Bird&#x27;s-Eye View 2" data-cap="Bird&#x27;s-Eye View 2"><div class="cap">Bird&#x27;s-Eye View 2</div></div>
+          <div class="thumb"><img src="images_real2/EXTERIOR__OZONE_SIGNATURE__HOTEL__BIRDEYEVIEW_3.jpg" alt="Bird&#x27;s-Eye View 3" data-cap="Bird&#x27;s-Eye View 3"><div class="cap">Bird&#x27;s-Eye View 3</div></div>
+          <div class="thumb"><img src="images_real/08_condo_pool_1.jpg" alt="Condo Pool (HD)" data-cap="Condo Pool (HD)"><div class="cap">Condo Pool (HD)</div></div>
+          <div class="thumb"><img src="images/p04_0.jpg" alt="Condo Pool &amp; Landscape" data-cap="Condo Pool &amp; Landscape"><div class="cap">Condo Pool &amp; Landscape</div></div>
+          <div class="thumb"><img src="images_real2/EXTERIOR__OZONE_SIGNATURE__CONDO__08_CONDO_POOL_1.jpg" alt="Condo Pool 1" data-cap="Condo Pool 1"><div class="cap">Condo Pool 1</div></div>
+          <div class="thumb"><img src="images_real2/EXTERIOR__OZONE_SIGNATURE__CONDO__08_CONDO_POOL_2.jpg" alt="Condo Pool 2" data-cap="Condo Pool 2"><div class="cap">Condo Pool 2</div></div>
+          <div class="thumb"><img src="images_real2/EXTERIOR__OZONE_SIGNATURE__CONDO__08_CONDO_POOL_3.jpg" alt="Condo Pool 3" data-cap="Condo Pool 3"><div class="cap">Condo Pool 3</div></div>
+          <div class="thumb"><img src="images_real2/EXTERIOR__OZONE_SIGNATURE__CONDO__08_CONDO_POOL_4.jpg" alt="Condo Pool 4" data-cap="Condo Pool 4"><div class="cap">Condo Pool 4</div></div>
+          <div class="thumb"><img src="images_real2/EXTERIOR__OZONE_SIGNATURE__CONDO__08_CONDO_POOL_5.jpg" alt="Condo Pool 5" data-cap="Condo Pool 5"><div class="cap">Condo Pool 5</div></div>
+          <div class="thumb"><img src="images_real2/EXTERIOR__OZONE_SIGNATURE__CONDO__08_CONDO_POOL_6.jpg" alt="Condo Pool 6" data-cap="Condo Pool 6"><div class="cap">Condo Pool 6</div></div>
+          <div class="thumb"><img src="images_real2/EXTERIOR__OZONE_SIGNATURE__CONDO__08_CONDO_POOL_7.jpg" alt="Condo Pool 7" data-cap="Condo Pool 7"><div class="cap">Condo Pool 7</div></div>
+          <div class="thumb"><img src="images_real2/EXTERIOR__OZONE_SIGNATURE__CONDO__08_CONDO_POOL_8.jpg" alt="Condo Pool 8" data-cap="Condo Pool 8"><div class="cap">Condo Pool 8</div></div>
+        </div>
+        <div class="carousel-arrow carousel-next" data-target="ozone-ext">&#10095;</div>
+      </div>
+      <h4 style="font-family:var(--serif);font-size:1rem;font-weight:400;color:var(--text);margin:28px 0 12px;">Hotel Interior — Deluxe</h4>
+      <div class="carousel-wrap">
+        <div class="carousel-arrow carousel-prev" data-target="ozone-hotel-deluxe">&#10094;</div>
+        <div class="thumb-grid" data-photo-group="ozone-hotel-deluxe">
+          <div class="thumb"><img src="images/p08_0.jpg" alt="Deluxe Room" data-cap="Deluxe Room"><div class="cap">Deluxe Room</div></div>
+          <div class="thumb"><img src="images/p09_0.jpg" alt="Deluxe Room (Alt.)" data-cap="Deluxe Room (Alt.)"><div class="cap">Deluxe Room (Alt.)</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__HOTEL__INTERIOR_DELUXE_TOPVIEW.jpg" alt="Deluxe Room — Top View" data-cap="Deluxe Room — Top View"><div class="cap">Deluxe Room — Top View</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__HOTEL__INTERIOR_DELUXE_View1_00000.jpg" alt="Deluxe Room — View 1" data-cap="Deluxe Room — View 1"><div class="cap">Deluxe Room — View 1</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__HOTEL__INTERIOR_DELUXE_View2_00000.jpg" alt="Deluxe Room — View 2" data-cap="Deluxe Room — View 2"><div class="cap">Deluxe Room — View 2</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__HOTEL__INTERIOR_DELUXE_View3_00000.jpg" alt="Deluxe Room — View 3" data-cap="Deluxe Room — View 3"><div class="cap">Deluxe Room — View 3</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__HOTEL__INTERIOR_DELUXE_View4_00000.jpg" alt="Deluxe Room — View 4" data-cap="Deluxe Room — View 4"><div class="cap">Deluxe Room — View 4</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__HOTEL__INTERIOR_DELUXE_View5_00000.jpg" alt="Deluxe Room — View 5" data-cap="Deluxe Room — View 5"><div class="cap">Deluxe Room — View 5</div></div>
+        </div>
+        <div class="carousel-arrow carousel-next" data-target="ozone-hotel-deluxe">&#10095;</div>
+      </div>
+      <h4 style="font-family:var(--serif);font-size:1rem;font-weight:400;color:var(--text);margin:28px 0 12px;">Hotel Interior — Suite &amp;amp; President Suite</h4>
+      <div class="carousel-wrap">
+        <div class="carousel-arrow carousel-prev" data-target="ozone-hotel-suite">&#10094;</div>
+        <div class="thumb-grid" data-photo-group="ozone-hotel-suite">
+          <div class="thumb"><img src="images/p10_0.jpg" alt="President Suite Bedroom" data-cap="President Suite Bedroom"><div class="cap">President Suite Bedroom</div></div>
+          <div class="thumb"><img src="images/p11_0.jpg" alt="President Suite — Floor Plan Top View" data-cap="President Suite — Floor Plan Top View"><div class="cap">President Suite — Floor Plan Top View</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__HOTEL__INTERIOR_SUIT_TOPVIEW.jpg" alt="Suite — Top View" data-cap="Suite — Top View"><div class="cap">Suite — Top View</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__HOTEL__INTERIOR_SUIT_BEDROOM_1_00000.jpg" alt="Suite — Bedroom 1" data-cap="Suite — Bedroom 1"><div class="cap">Suite — Bedroom 1</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__HOTEL__INTERIOR_SUIT_BEDROOM_2_00000.jpg" alt="Suite — Bedroom 2" data-cap="Suite — Bedroom 2"><div class="cap">Suite — Bedroom 2</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__HOTEL__INTERIOR_SUIT_LIVINGROOM_1_00000.jpg" alt="Suite — Living Room 1" data-cap="Suite — Living Room 1"><div class="cap">Suite — Living Room 1</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__HOTEL__INTERIOR_SUIT_LIVINGROOM_2_00000.jpg" alt="Suite — Living Room 2" data-cap="Suite — Living Room 2"><div class="cap">Suite — Living Room 2</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__HOTEL__INTERIOR_PRESIDENT_SUIT_TOPVIEW.jpg" alt="President Suite — Top View" data-cap="President Suite — Top View"><div class="cap">President Suite — Top View</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__HOTEL__INTERIOR_PRESIDENT_SUIT_ROOM_BEDROOM_A_1_00000.jpg" alt="President Suite — Bedroom A 1" data-cap="President Suite — Bedroom A 1"><div class="cap">President Suite — Bedroom A 1</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__HOTEL__INTERIOR_PRESIDENT_SUIT_ROOM_BEDROOM_A_2_00000.jpg" alt="President Suite — Bedroom A 2" data-cap="President Suite — Bedroom A 2"><div class="cap">President Suite — Bedroom A 2</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__HOTEL__INTERIOR_PRESIDENT_SUIT_ROOM_BEDROOM_B_1_00000.jpg" alt="President Suite — Bedroom B 1" data-cap="President Suite — Bedroom B 1"><div class="cap">President Suite — Bedroom B 1</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__HOTEL__INTERIOR_PRESIDENT_SUIT_ROOM_BEDROOM_B_2_00000.jpg" alt="President Suite — Bedroom B 2" data-cap="President Suite — Bedroom B 2"><div class="cap">President Suite — Bedroom B 2</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__HOTEL__INTERIOR_PRESIDENT_SUIT_ROOM_BEDROOM_B_3_00000.jpg" alt="President Suite — Bedroom B 3" data-cap="President Suite — Bedroom B 3"><div class="cap">President Suite — Bedroom B 3</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__HOTEL__INTERIOR_PRESIDENT_SUIT_ROOM_LIVINGROOM_1_00000.jpg" alt="President Suite — Living Room 1" data-cap="President Suite — Living Room 1"><div class="cap">President Suite — Living Room 1</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__HOTEL__INTERIOR_PRESIDENT_SUIT_ROOM_LIVINGROOM_2_00000.jpg" alt="President Suite — Living Room 2" data-cap="President Suite — Living Room 2"><div class="cap">President Suite — Living Room 2</div></div>
+        </div>
+        <div class="carousel-arrow carousel-next" data-target="ozone-hotel-suite">&#10095;</div>
+      </div>
+      <h4 style="font-family:var(--serif);font-size:1rem;font-weight:400;color:var(--text);margin:28px 0 12px;">Condo Interior — 1BR / 2BR / 3BR</h4>
+      <div class="carousel-wrap">
+        <div class="carousel-arrow carousel-prev" data-target="ozone-condo-int">&#10094;</div>
+        <div class="thumb-grid" data-photo-group="ozone-condo-int">
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__CONDO__1_BEDROOM_A__TOPVIEW_1BEDROOM_A.jpg" alt="1-Bedroom A — Top View" data-cap="1-Bedroom A — Top View"><div class="cap">1-Bedroom A — Top View</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__CONDO__1_BEDROOM_A__INTERIOR_CONDO_1BEDROOM_A_SECTION.jpg" alt="1-Bedroom A — Section" data-cap="1-Bedroom A — Section"><div class="cap">1-Bedroom A — Section</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__CONDO__1_BEDROOM_A__INTERIOR_CONDO_1BEDROOM_A_LIVINGROOM_1.jpg" alt="1-Bedroom A — Living Room 1" data-cap="1-Bedroom A — Living Room 1"><div class="cap">1-Bedroom A — Living Room 1</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__CONDO__1_BEDROOM_A__INTERIOR_CONDO_1BEDROOM_A_LIVINGROOM_2.jpg" alt="1-Bedroom A — Living Room 2" data-cap="1-Bedroom A — Living Room 2"><div class="cap">1-Bedroom A — Living Room 2</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__CONDO__1_BEDROOM_A__INTERIOR_CONDO_1BEDROOM_A_BEDROOM_1.jpg" alt="1-Bedroom A — Bedroom 1" data-cap="1-Bedroom A — Bedroom 1"><div class="cap">1-Bedroom A — Bedroom 1</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__CONDO__1_BEDROOM_A__INTERIOR_CONDO_1BEDROOM_A_BEDROOM_2.jpg" alt="1-Bedroom A — Bedroom 2" data-cap="1-Bedroom A — Bedroom 2"><div class="cap">1-Bedroom A — Bedroom 2</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__CONDO__1_BEDROOM_A__INTERIOR_CONDO_1BEDROOM_A_BATHROOM_1.jpg" alt="1-Bedroom A — Bathroom 1" data-cap="1-Bedroom A — Bathroom 1"><div class="cap">1-Bedroom A — Bathroom 1</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__CONDO__1_BEDROOM_B__TOPVIEW_1BEDROOM_B.jpg" alt="1-Bedroom B — Top View" data-cap="1-Bedroom B — Top View"><div class="cap">1-Bedroom B — Top View</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__CONDO__1_BEDROOM_B__INTERIOR_CONDO_1BEDROOM_B_LIVINGROOM_1.jpg" alt="1-Bedroom B — Living Room 1" data-cap="1-Bedroom B — Living Room 1"><div class="cap">1-Bedroom B — Living Room 1</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__CONDO__1_BEDROOM_B__INTERIOR_CONDO_1BEDROOM_B_LIVINGROOM_2.jpg" alt="1-Bedroom B — Living Room 2" data-cap="1-Bedroom B — Living Room 2"><div class="cap">1-Bedroom B — Living Room 2</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__CONDO__1_BEDROOM_B__INTERIOR_CONDO_1BEDROOM_B_BEDROOM_1.jpg" alt="1-Bedroom B — Bedroom 1" data-cap="1-Bedroom B — Bedroom 1"><div class="cap">1-Bedroom B — Bedroom 1</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__CONDO__1_BEDROOM_B__INTERIOR_CONDO_1BEDROOM_B_BEDROOM_2.jpg" alt="1-Bedroom B — Bedroom 2" data-cap="1-Bedroom B — Bedroom 2"><div class="cap">1-Bedroom B — Bedroom 2</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__CONDO__1_BEDROOM_B__INTERIOR_CONDO_1BEDROOM_B_BATHROOM_1.jpg" alt="1-Bedroom B — Bathroom 1" data-cap="1-Bedroom B — Bathroom 1"><div class="cap">1-Bedroom B — Bathroom 1</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__CONDO__2_BEDROOM__TOPVIEW_2BEDROOM.jpg" alt="2-Bedroom — Top View" data-cap="2-Bedroom — Top View"><div class="cap">2-Bedroom — Top View</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__CONDO__2_BEDROOM__INTERIOR_CONDO_2BEDROOM_LIVINGROOM_1.jpg" alt="2-Bedroom — Living Room 1" data-cap="2-Bedroom — Living Room 1"><div class="cap">2-Bedroom — Living Room 1</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__CONDO__2_BEDROOM__INTERIOR_CONDO_2BEDROOM_LIVINGROOM_2.jpg" alt="2-Bedroom — Living Room 2" data-cap="2-Bedroom — Living Room 2"><div class="cap">2-Bedroom — Living Room 2</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__CONDO__2_BEDROOM__INTERIOR_CONDO_2BEDROOM_LIVINGROOM_3.jpg" alt="2-Bedroom — Living Room 3" data-cap="2-Bedroom — Living Room 3"><div class="cap">2-Bedroom — Living Room 3</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__CONDO__2_BEDROOM__INTERIOR_CONDO_2BEDROOM_BEDROOM_A.jpg" alt="2-Bedroom — Bedroom A" data-cap="2-Bedroom — Bedroom A"><div class="cap">2-Bedroom — Bedroom A</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__CONDO__2_BEDROOM__INTERIOR_CONDO_2BEDROOM_BEDROOM_B.jpg" alt="2-Bedroom — Bedroom B" data-cap="2-Bedroom — Bedroom B"><div class="cap">2-Bedroom — Bedroom B</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__CONDO__2_BEDROOM__INTERIOR_CONDO_2BEDROOM_BATHROOM_A.jpg" alt="2-Bedroom — Bathroom A" data-cap="2-Bedroom — Bathroom A"><div class="cap">2-Bedroom — Bathroom A</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__CONDO__2_BEDROOM__INTERIOR_CONDO_2BEDROOM_BATHROOM_B.jpg" alt="2-Bedroom — Bathroom B" data-cap="2-Bedroom — Bathroom B"><div class="cap">2-Bedroom — Bathroom B</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__CONDO__3_BEDROOM__TOPVIEW_3BEDROOM.jpg" alt="3-Bedroom — Top View" data-cap="3-Bedroom — Top View"><div class="cap">3-Bedroom — Top View</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__CONDO__3_BEDROOM__INTERIOR_CONDO_3BEDROOM_LIVINGROOM_1.jpg" alt="3-Bedroom — Living Room 1" data-cap="3-Bedroom — Living Room 1"><div class="cap">3-Bedroom — Living Room 1</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__CONDO__3_BEDROOM__INTERIOR_CONDO_3BEDROOM_LIVINGROOM_2.jpg" alt="3-Bedroom — Living Room 2" data-cap="3-Bedroom — Living Room 2"><div class="cap">3-Bedroom — Living Room 2</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__CONDO__3_BEDROOM__INTERIOR_CONDO_3BEDROOM_LIVINGROOM_3.jpg" alt="3-Bedroom — Living Room 3" data-cap="3-Bedroom — Living Room 3"><div class="cap">3-Bedroom — Living Room 3</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__CONDO__3_BEDROOM__INTERIOR_CONDO_3BEDROOM_LIVINGROOM_4.jpg" alt="3-Bedroom — Living Room 4" data-cap="3-Bedroom — Living Room 4"><div class="cap">3-Bedroom — Living Room 4</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__CONDO__3_BEDROOM__INTERIOR_CONDO_3BEDROOM_BEDROOM_A_1.jpg" alt="3-Bedroom — Bedroom A 1" data-cap="3-Bedroom — Bedroom A 1"><div class="cap">3-Bedroom — Bedroom A 1</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__CONDO__3_BEDROOM__INTERIOR_CONDO_3BEDROOM_BEDROOM_A_2.jpg" alt="3-Bedroom — Bedroom A 2" data-cap="3-Bedroom — Bedroom A 2"><div class="cap">3-Bedroom — Bedroom A 2</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__CONDO__3_BEDROOM__INTERIOR_CONDO_3BEDROOM_BEDROOM_B.jpg" alt="3-Bedroom — Bedroom B" data-cap="3-Bedroom — Bedroom B"><div class="cap">3-Bedroom — Bedroom B</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__CONDO__3_BEDROOM__INTERIOR_CONDO_3BEDROOM_BEDROOM_C.jpg" alt="3-Bedroom — Bedroom C" data-cap="3-Bedroom — Bedroom C"><div class="cap">3-Bedroom — Bedroom C</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__CONDO__3_BEDROOM__INTERIOR_CONDO_3BEDROOM_BATHROOM_A.jpg" alt="3-Bedroom — Bathroom A" data-cap="3-Bedroom — Bathroom A"><div class="cap">3-Bedroom — Bathroom A</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__CONDO__3_BEDROOM__INTERIOR_CONDO_3BEDROOM_BATHROOM_B.jpg" alt="3-Bedroom — Bathroom B" data-cap="3-Bedroom — Bathroom B"><div class="cap">3-Bedroom — Bathroom B</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__CONDO__3_BEDROOM__INTERIOR_CONDO_3BEDROOM_BATHROOM_C.jpg" alt="3-Bedroom — Bathroom C" data-cap="3-Bedroom — Bathroom C"><div class="cap">3-Bedroom — Bathroom C</div></div>
+        </div>
+        <div class="carousel-arrow carousel-next" data-target="ozone-condo-int">&#10095;</div>
+      </div>
+      <h4 style="font-family:var(--serif);font-size:1rem;font-weight:400;color:var(--text);margin:28px 0 12px;">Shared Facilities — Gym, Library, Lobby, Restaurant, Spa, Ballroom</h4>
+      <div class="carousel-wrap">
+        <div class="carousel-arrow carousel-prev" data-target="ozone-facility">&#10094;</div>
+        <div class="thumb-grid" data-photo-group="ozone-facility">
+          <div class="thumb"><img src="images/p05_0.jpg" alt="Fitness Gym" data-cap="Fitness Gym"><div class="cap">Fitness Gym</div></div>
+          <div class="thumb"><img src="images/p06_0.jpg" alt="Lobby" data-cap="Lobby"><div class="cap">Lobby</div></div>
+          <div class="thumb"><img src="images/p07_0.jpg" alt="Restaurant" data-cap="Restaurant"><div class="cap">Restaurant</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__FACILITY__INTERIOR_LOBBY_VIEW1_00000.jpg" alt="Lobby — View 1" data-cap="Lobby — View 1"><div class="cap">Lobby — View 1</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__FACILITY__INTERIOR_LOBBY_VIEW2_00000.jpg" alt="Lobby — View 2" data-cap="Lobby — View 2"><div class="cap">Lobby — View 2</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__FACILITY__INTERIOR_LOBBY_VIEW3_00000.jpg" alt="Lobby — View 3" data-cap="Lobby — View 3"><div class="cap">Lobby — View 3</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__FACILITY__INTERIOR_BALLROOM_1.jpg" alt="Ballroom 1" data-cap="Ballroom 1"><div class="cap">Ballroom 1</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__FACILITY__INTERIOR_BALLROOM_2.jpg" alt="Ballroom 2" data-cap="Ballroom 2"><div class="cap">Ballroom 2</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__FACILITY__INTERIOR_BALLROOM_3.jpg" alt="Ballroom 3" data-cap="Ballroom 3"><div class="cap">Ballroom 3</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__FACILITY__INTERIOR_GYM_1_00000.jpg" alt="Hotel Gym 1" data-cap="Hotel Gym 1"><div class="cap">Hotel Gym 1</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__FACILITY__INTERIOR_GYM_2_00000.jpg" alt="Hotel Gym 2" data-cap="Hotel Gym 2"><div class="cap">Hotel Gym 2</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__FACILITY__INTERIOR_GYM_3_00000.jpg" alt="Hotel Gym 3" data-cap="Hotel Gym 3"><div class="cap">Hotel Gym 3</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__FACILITY__INTERIOR_CONDO_GYM_1_00000.jpg" alt="Condo Gym 1" data-cap="Condo Gym 1"><div class="cap">Condo Gym 1</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__FACILITY__INTERIOR_CONDO_GYM_2_00000.jpg" alt="Condo Gym 2" data-cap="Condo Gym 2"><div class="cap">Condo Gym 2</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__FACILITY__INTERIOR_CONDO_GYM_3_00000.jpg" alt="Condo Gym 3" data-cap="Condo Gym 3"><div class="cap">Condo Gym 3</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__FACILITY__INTERIOR_CONDO_LIBRARY_1_00000.jpg" alt="Condo Library 1" data-cap="Condo Library 1"><div class="cap">Condo Library 1</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__FACILITY__INTERIOR_CONDO_LIBRARY_2_00000.jpg" alt="Condo Library 2" data-cap="Condo Library 2"><div class="cap">Condo Library 2</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__FACILITY__INTERIOR_CONDO_LIBRARY_3_00000.jpg" alt="Condo Library 3" data-cap="Condo Library 3"><div class="cap">Condo Library 3</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__FACILITY__INTERIOR_RESTAURANT_L1_1_00000.jpg" alt="Restaurant L1 — View 1" data-cap="Restaurant L1 — View 1"><div class="cap">Restaurant L1 — View 1</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__FACILITY__INTERIOR_RESTAURANT_L1_2_00000.jpg" alt="Restaurant L1 — View 2" data-cap="Restaurant L1 — View 2"><div class="cap">Restaurant L1 — View 2</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__FACILITY__INTERIOR_RESTAURANT_L1_3_00000.jpg" alt="Restaurant L1 — View 3" data-cap="Restaurant L1 — View 3"><div class="cap">Restaurant L1 — View 3</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__FACILITY__INTERIOR_RESTAURANT_L1_4_00000.jpg" alt="Restaurant L1 — View 4" data-cap="Restaurant L1 — View 4"><div class="cap">Restaurant L1 — View 4</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__FACILITY__INTERIOR_RESTAURANT_L1_5_00000.jpg" alt="Restaurant L1 — View 5" data-cap="Restaurant L1 — View 5"><div class="cap">Restaurant L1 — View 5</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__FACILITY__INTERIOR_RESTAURANT_L1_6_00000.jpg" alt="Restaurant L1 — View 6" data-cap="Restaurant L1 — View 6"><div class="cap">Restaurant L1 — View 6</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__FACILITY__INTERIOR_RESTAURANT_L1_7_00000.jpg" alt="Restaurant L1 — View 7" data-cap="Restaurant L1 — View 7"><div class="cap">Restaurant L1 — View 7</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__FACILITY__INTERIOR_RESTAURANT_L2_1_00000.jpg" alt="Restaurant L2 — View 1" data-cap="Restaurant L2 — View 1"><div class="cap">Restaurant L2 — View 1</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__FACILITY__INTERIOR_RESTAURANT_L2_2_00000.jpg" alt="Restaurant L2 — View 2" data-cap="Restaurant L2 — View 2"><div class="cap">Restaurant L2 — View 2</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__FACILITY__INTERIOR_RESTAURANT_L2_3_00000.jpg" alt="Restaurant L2 — View 3" data-cap="Restaurant L2 — View 3"><div class="cap">Restaurant L2 — View 3</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__FACILITY__INTERIOR_RESTAURANT_L2_4_00000.jpg" alt="Restaurant L2 — View 4" data-cap="Restaurant L2 — View 4"><div class="cap">Restaurant L2 — View 4</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__FACILITY__INTERIOR_RESTAURANT_L2_5_00000.jpg" alt="Restaurant L2 — View 5" data-cap="Restaurant L2 — View 5"><div class="cap">Restaurant L2 — View 5</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__FACILITY__INTERIOR_SPA_1_00000.jpg" alt="Spa 1" data-cap="Spa 1"><div class="cap">Spa 1</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__FACILITY__INTERIOR_SPA_2_00000.jpg" alt="Spa 2" data-cap="Spa 2"><div class="cap">Spa 2</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__FACILITY__INTERIOR_SPA_3_00000.jpg" alt="Spa 3" data-cap="Spa 3"><div class="cap">Spa 3</div></div>
+          <div class="thumb"><img src="images_real2/INTERIOR__OZONE_SIGNATURE__FACILITY__INTERIOR_SPA_4_00000.jpg" alt="Spa 4" data-cap="Spa 4"><div class="cap">Spa 4</div></div>
+        </div>
+        <div class="carousel-arrow carousel-next" data-target="ozone-facility">&#10095;</div>
       </div>
     </div>
 
-    <!-- QAV Wellbeing -->
-    <div class="project-block">
-      <div class="project-header">
-        <h3>QAV Wellbeing</h3>
-        <span>Architectural Visualization — Exterior &amp; Interior</span>
-      </div>
-      <div class="thumb-grid" data-gallery="qavwell">
-        <div class="thumb"><img src="images/p12_0.jpg" alt="SIAMSPORT Facility – Front View" data-cap="SIAMSPORT Facility – Front View"><div class="cap">SIAMSPORT Facility</div></div>
-        <div class="thumb"><img src="images/p13_0.jpg" alt="QAV Stay – Exterior" data-cap="QAV Stay – Exterior"><div class="cap">QAV Stay – Exterior</div></div>
-        <div class="thumb"><img src="images/p14_0.jpg" alt="Bird's-Eye View – Full Development" data-cap="Bird's-Eye View – Full Development"><div class="cap">Bird's-Eye View</div></div>
-        <div class="thumb"><img src="images/p15_0.jpg" alt="Main Entrance & Clubhouse" data-cap="Main Entrance & Clubhouse"><div class="cap">Main Entrance & Clubhouse</div></div>
-        <div class="thumb"><img src="images/p16_0.jpg" alt="Interior – Living & Dining Room" data-cap="Interior – Living & Dining Room"><div class="cap">Living & Dining Room</div></div>
-        <div class="thumb"><img src="images/p17_0.jpg" alt="Interior – Bedroom (1st Floor)" data-cap="Interior – Bedroom (1st Floor)"><div class="cap">Bedroom (1st Floor)</div></div>
-      </div>
-    </div>
-
-    <!-- QAV House -->
     <div class="project-block">
       <div class="project-header">
         <h3>QAV House</h3>
-        <span>Architectural Visualization — Villa Type B &amp; C</span>
       </div>
-      <div class="thumb-grid" data-gallery="qavhouse">
-        <div class="thumb"><img src="images/p18_0.jpg" alt="Bird's-Eye View – Full Development" data-cap="Bird's-Eye View – Full Development"><div class="cap">Bird's-Eye View</div></div>
-        <div class="thumb"><img src="images/p19_0.jpg" alt="Type B – Exterior Pool View" data-cap="Type B – Exterior Pool View"><div class="cap">Type B – Pool View</div></div>
-        <div class="thumb"><img src="images/p20_0.jpg" alt="Type C – Exterior Pool View" data-cap="Type C – Exterior Pool View"><div class="cap">Type C – Pool View</div></div>
-        <div class="thumb"><img src="images/p21_0.jpg" alt="Type B – Living Room" data-cap="Type B – Living Room"><div class="cap">Type B – Living Room</div></div>
-        <div class="thumb"><img src="images/p22_0.jpg" alt="Type B – Bedroom" data-cap="Type B – Bedroom"><div class="cap">Type B – Bedroom</div></div>
-        <div class="thumb"><img src="images/p23_0.jpg" alt="Type B – Bathroom" data-cap="Type B – Bathroom"><div class="cap">Type B – Bathroom</div></div>
-        <div class="thumb"><img src="images/p24_0.jpg" alt="Type C – Living Room" data-cap="Type C – Living Room"><div class="cap">Type C – Living Room</div></div>
-        <div class="thumb"><img src="images/p25_0.jpg" alt="Type C – Living Room (Alt. View)" data-cap="Type C – Living Room (Alt. View)"><div class="cap">Type C – Living Room (Alt.)</div></div>
-        <div class="thumb"><img src="images/p26_0.jpg" alt="Type C – Bedroom" data-cap="Type C – Bedroom"><div class="cap">Type C – Bedroom</div></div>
-        <div class="thumb"><img src="images/p27_0.jpg" alt="Type C – Bathroom" data-cap="Type C – Bathroom"><div class="cap">Type C – Bathroom</div></div>
+      <h4 style="font-family:var(--serif);font-size:1rem;font-weight:400;color:var(--text);margin:28px 0 12px;">Bird&#x27;s-Eye View</h4>
+      <div class="carousel-wrap">
+        <div class="thumb-grid thumb-grid-featured" data-photo-group="qavhouse-birdview">
+          <div class="thumb"><img src="images_real2/QAV_PERSPECTIVE__BIRDVIEW_01.jpg" alt="Bird&#x27;s-Eye View" data-cap="Bird&#x27;s-Eye View"><div class="cap">Bird&#x27;s-Eye View</div></div>
+        </div>
+      </div>
+      <h4 style="font-family:var(--serif);font-size:1rem;font-weight:400;color:var(--text);margin:28px 0 12px;">Type B</h4>
+      <div class="carousel-wrap">
+        <div class="carousel-arrow carousel-prev" data-target="qavhouse-b">&#10094;</div>
+        <div class="thumb-grid" data-photo-group="qavhouse-b">
+          <div class="thumb"><img src="images_real2/QAV_PERSPECTIVE__TYPE_B_EXTERIOR_POOL_VIEW1_02.jpg" alt="Type B — Exterior Pool View 1" data-cap="Type B — Exterior Pool View 1"><div class="cap">Type B — Exterior Pool View 1</div></div>
+          <div class="thumb"><img src="images_real2/QAV_PERSPECTIVE__TYPE_B_EXTERIOR_POOL_VIEW2_01.jpg" alt="Type B — Exterior Pool View 2" data-cap="Type B — Exterior Pool View 2"><div class="cap">Type B — Exterior Pool View 2</div></div>
+          <div class="thumb"><img src="images_real2/QAV_PERSPECTIVE__TYPE_B_INTERIOR_LIVINGROOM_01.jpg" alt="Type B — Living Room" data-cap="Type B — Living Room"><div class="cap">Type B — Living Room</div></div>
+          <div class="thumb"><img src="images_real2/QAV_PERSPECTIVE__TYPE_B_INTERIOR_BEDROOM_01.jpg" alt="Type B — Bedroom" data-cap="Type B — Bedroom"><div class="cap">Type B — Bedroom</div></div>
+          <div class="thumb"><img src="images_real2/QAV_PERSPECTIVE__TYPE_B_INTERIOR_BATHROOM_01.jpg" alt="Type B — Bathroom" data-cap="Type B — Bathroom"><div class="cap">Type B — Bathroom</div></div>
+        </div>
+        <div class="carousel-arrow carousel-next" data-target="qavhouse-b">&#10095;</div>
+      </div>
+      <h4 style="font-family:var(--serif);font-size:1rem;font-weight:400;color:var(--text);margin:28px 0 12px;">Type C</h4>
+      <div class="carousel-wrap">
+        <div class="carousel-arrow carousel-prev" data-target="qavhouse-c">&#10094;</div>
+        <div class="thumb-grid" data-photo-group="qavhouse-c">
+          <div class="thumb"><img src="images_real2/QAV_PERSPECTIVE__TYPE_C_EXTERIOR_FRONT_01.jpg" alt="Type C — Exterior Front" data-cap="Type C — Exterior Front"><div class="cap">Type C — Exterior Front</div></div>
+          <div class="thumb"><img src="images_real2/QAV_PERSPECTIVE__TYPE_C_EXTERIOR_POOL_01.jpg" alt="Type C — Exterior Pool View 1" data-cap="Type C — Exterior Pool View 1"><div class="cap">Type C — Exterior Pool View 1</div></div>
+          <div class="thumb"><img src="images_real2/QAV_PERSPECTIVE__TYPE_C_EXTERIOR_POOL_02.jpg" alt="Type C — Exterior Pool View 2" data-cap="Type C — Exterior Pool View 2"><div class="cap">Type C — Exterior Pool View 2</div></div>
+          <div class="thumb"><img src="images_real2/QAV_PERSPECTIVE__TYPE_C_INTERIOR_LIVINGROOM_01.jpg" alt="Type C — Living Room 1" data-cap="Type C — Living Room 1"><div class="cap">Type C — Living Room 1</div></div>
+          <div class="thumb"><img src="images_real2/QAV_PERSPECTIVE__TYPE_C_INTERIOR_LIVINGROOM_02.jpg" alt="Type C — Living Room 2" data-cap="Type C — Living Room 2"><div class="cap">Type C — Living Room 2</div></div>
+          <div class="thumb"><img src="images_real2/QAV_PERSPECTIVE__TYPE_C_INTERIOR_BEDROOM_01.jpg" alt="Type C — Bedroom" data-cap="Type C — Bedroom"><div class="cap">Type C — Bedroom</div></div>
+          <div class="thumb"><img src="images_real2/QAV_PERSPECTIVE__TYPE_C_INTERIOR_BATHROOM_01.jpg" alt="Type C — Bathroom" data-cap="Type C — Bathroom"><div class="cap">Type C — Bathroom</div></div>
+        </div>
+        <div class="carousel-arrow carousel-next" data-target="qavhouse-c">&#10095;</div>
       </div>
     </div>
 
-    <!-- Louis Vuitton Sanlitun -->
+    <div class="project-block">
+      <div class="project-header">
+        <h3>KK10 — Private House</h3>
+      </div>
+      <div class="carousel-wrap">
+        <div class="carousel-arrow carousel-prev" data-target="kk10">&#10094;</div>
+        <div class="thumb-grid" data-photo-group="kk10">
+          <div class="thumb"><img src="images_real2/EXTERIOR__KK10__02_HOUSE_POOL_XS_00000.jpg" alt="Pool View (XS)" data-cap="Pool View (XS)"><div class="cap">Pool View (XS)</div></div>
+          <div class="thumb"><img src="images_real2/EXTERIOR__KK10__03_HOUSE_BIRDVIEW_00000.jpg" alt="Bird&#x27;s-Eye View" data-cap="Bird&#x27;s-Eye View"><div class="cap">Bird&#x27;s-Eye View</div></div>
+          <div class="thumb"><img src="images_real2/EXTERIOR__KK10__HOUSE_S_TWILIGHT_00000.jpg" alt="House S — Twilight" data-cap="House S — Twilight"><div class="cap">House S — Twilight</div></div>
+          <div class="thumb"><img src="images_real2/EXTERIOR__KK10__HOUSE_XS_TWILIGHT_00000.jpg" alt="House XS — Twilight" data-cap="House XS — Twilight"><div class="cap">House XS — Twilight</div></div>
+        </div>
+        <div class="carousel-arrow carousel-next" data-target="kk10">&#10095;</div>
+      </div>
+    </div>
+
     <div class="project-block">
       <div class="project-header">
         <h3>Louis Vuitton Sanlitun — Beijing, China</h3>
-        <span>Retail Interior Visualization — L1 / L2 / L3 / BF</span>
       </div>
-      <div class="thumb-grid" data-gallery="lv">
-        <div class="thumb"><img src="images/p28_0.jpg" alt="L1 – Interior View 1" data-cap="L1 – Interior View 1"><div class="cap">L1 – Interior View 1</div></div>
-        <div class="thumb"><img src="images/p28_1.jpg" alt="L1 – Interior View 2" data-cap="L1 – Interior View 2"><div class="cap">L1 – Interior View 2</div></div>
-        <div class="thumb"><img src="images/p28_2.jpg" alt="L1 – Interior View 3" data-cap="L1 – Interior View 3"><div class="cap">L1 – Interior View 3</div></div>
-        <div class="thumb"><img src="images/p28_3.jpg" alt="L1 – Interior View 5" data-cap="L1 – Interior View 5"><div class="cap">L1 – Interior View 5</div></div>
-        <div class="thumb"><img src="images/p29_0.jpg" alt="L2 – Interior View 1" data-cap="L2 – Interior View 1"><div class="cap">L2 – Interior View 1</div></div>
-        <div class="thumb"><img src="images/p29_1.jpg" alt="L2 – Interior View 2" data-cap="L2 – Interior View 2"><div class="cap">L2 – Interior View 2</div></div>
-        <div class="thumb"><img src="images/p29_2.jpg" alt="L2 – Interior View 3" data-cap="L2 – Interior View 3"><div class="cap">L2 – Interior View 3</div></div>
-        <div class="thumb"><img src="images/p29_3.jpg" alt="L2 – Interior View 6" data-cap="L2 – Interior View 6"><div class="cap">L2 – Interior View 6</div></div>
-        <div class="thumb"><img src="images/p30_0.jpg" alt="L2 – Interior View 7" data-cap="L2 – Interior View 7"><div class="cap">L2 – Interior View 7</div></div>
-        <div class="thumb"><img src="images/p30_1.jpg" alt="L3 – Interior View" data-cap="L3 – Interior View"><div class="cap">L3 – Interior View</div></div>
-        <div class="thumb"><img src="images/p30_2.jpg" alt="BF – Interior View" data-cap="BF – Interior View"><div class="cap">BF – Interior View</div></div>
-      </div>
-    </div>
-
-    <div class="project-block">
-      <div class="project-header">
-        <h3>Animation &amp; 360° Walkthroughs</h3>
-        <span>Video &amp; Panorama Links</span>
-      </div>
-      <div class="portfolio-grid">
-        <div class="pf-card">
-          <h4>Animation</h4>
-          <a href="https://youtube.com/playlist?list=PLOrudW-30HZI" target="_blank" rel="noopener">YouTube Playlist →</a>
+      <div class="carousel-wrap">
+        <div class="carousel-arrow carousel-prev" data-target="lv">&#10094;</div>
+        <div class="thumb-grid" data-photo-group="lv">
+          <div class="thumb"><img src="images/p28_0.jpg" alt="L1 – Interior View 1" data-cap="L1 – Interior View 1"><div class="cap">L1 – Interior View 1</div></div>
+          <div class="thumb"><img src="images/p28_1.jpg" alt="L1 – Interior View 2" data-cap="L1 – Interior View 2"><div class="cap">L1 – Interior View 2</div></div>
+          <div class="thumb"><img src="images/p28_2.jpg" alt="L1 – Interior View 3" data-cap="L1 – Interior View 3"><div class="cap">L1 – Interior View 3</div></div>
+          <div class="thumb"><img src="images/p28_3.jpg" alt="L1 – Interior View 5" data-cap="L1 – Interior View 5"><div class="cap">L1 – Interior View 5</div></div>
+          <div class="thumb"><img src="images/p29_0.jpg" alt="L2 – Interior View 1" data-cap="L2 – Interior View 1"><div class="cap">L2 – Interior View 1</div></div>
+          <div class="thumb"><img src="images/p29_1.jpg" alt="L2 – Interior View 2" data-cap="L2 – Interior View 2"><div class="cap">L2 – Interior View 2</div></div>
+          <div class="thumb"><img src="images/p29_2.jpg" alt="L2 – Interior View 3" data-cap="L2 – Interior View 3"><div class="cap">L2 – Interior View 3</div></div>
+          <div class="thumb"><img src="images/p29_3.jpg" alt="L2 – Interior View 6" data-cap="L2 – Interior View 6"><div class="cap">L2 – Interior View 6</div></div>
+          <div class="thumb"><img src="images/p30_0.jpg" alt="L2 – Interior View 7" data-cap="L2 – Interior View 7"><div class="cap">L2 – Interior View 7</div></div>
+          <div class="thumb"><img src="images/p30_1.jpg" alt="L3 – Interior View" data-cap="L3 – Interior View"><div class="cap">L3 – Interior View</div></div>
+          <div class="thumb"><img src="images/p30_2.jpg" alt="BF – Interior View" data-cap="BF – Interior View"><div class="cap">BF – Interior View</div></div>
         </div>
-        <div class="pf-card">
-          <h4>360° Panorama Walkthrough</h4>
-          <a href="https://facebook.com/share/p/17VaSQ2DAz" target="_blank" rel="noopener">Pattaya PYCHE L — FL1</a>
-          <a href="https://facebook.com/share/p/19k7T2oJWU" target="_blank" rel="noopener">Pattaya PYCHE L — FL2</a>
-          <a href="https://facebook.com/share/p/1FxmGLHgrs" target="_blank" rel="noopener">Rama9 XL — FL1</a>
-          <a href="https://facebook.com/share/p/1ERm24xpFe" target="_blank" rel="noopener">Rama9 XL — FL2</a>
-          <a href="https://facebook.com/share/p/1BnaRZ6L31" target="_blank" rel="noopener">Rama9 XL — FL3</a>
-        </div>
+        <div class="carousel-arrow carousel-next" data-target="lv">&#10095;</div>
       </div>
     </div>
 
   </div>
 </section>
 
-<div class="lightbox" id="lightbox">
-  <span class="lb-close" id="lbClose">&times;</span>
-  <span class="lb-nav lb-prev" id="lbPrev">&#10094;</span>
-  <span class="lb-nav lb-next" id="lbNext">&#10095;</span>
-  <img id="lbImg" src="" alt="">
-  <div class="lb-cap" id="lbCap"></div>
-</div>
-
-<section id="education">
+<section id="contact">
   <div class="wrap">
-    <h2>Education &amp; Languages</h2>
+    <div class="section-head">
+      <div class="kicker">Get in touch</div>
+      <h2>Contact</h2>
+    </div>
     <div class="two-col">
       <div class="info-block">
-        <h3>Education</h3>
-        <p><b>Bachelor's Degree</b> — Electrical Power Engineering</p>
-        <p><b>Onone Animation Course</b> — Riff Studio</p>
-        <p><b>ZBrush Course</b></p>
+        <h3>Details</h3>
+        <p><b>Phone / WhatsApp:</b> +66 85-086-8179</p>
+        <p><b>Email:</b> <a href="mailto:gonosis@gmail.com">gonosis@gmail.com</a></p>
+        <p><b>Location:</b> Samut Prakan, Thailand</p>
       </div>
       <div class="info-block">
         <h3>Languages</h3>
@@ -419,76 +2322,233 @@
   </div>
 </section>
 
-<section id="contact">
-  <div class="wrap">
-    <h2>Contact</h2>
-    <div class="info-block">
-      <p><b>Phone / WhatsApp:</b> +66 85-086-8179</p>
-      <p><b>Email:</b> <a href="mailto:gonosis@gmail.com">gonosis@gmail.com</a></p>
-      <p><b>Location:</b> Samut Prakan, Thailand</p>
-      <p style="margin-top:14px;">References available upon request.</p>
-    </div>
-  </div>
-</section>
-
 <footer>
-  © 2026 Suriyapakorn Ngamsapsiri — Built with GitHub Pages
+  © 2026 Suriyapakorn Ngamsapsiri — Design Demo (not yet published)
 </footer>
 
-<script>
-  (function(){
-    var lightbox = document.getElementById('lightbox');
-    var lbImg = document.getElementById('lbImg');
-    var lbCap = document.getElementById('lbCap');
-    var lbClose = document.getElementById('lbClose');
-    var lbPrev = document.getElementById('lbPrev');
-    var lbNext = document.getElementById('lbNext');
-    var currentGroup = [];
-    var currentIndex = 0;
+<!-- Photo Lightbox -->
+<div class="photo-lightbox" id="photoLightbox">
+  <div class="pl-counter" id="plCounter">1 / 1</div>
+  <div class="pl-close" id="plClose">&times;</div>
+  <div class="pl-nav pl-prev" id="plPrev">&#10094;</div>
+  <div class="pl-nav pl-next" id="plNext">&#10095;</div>
+  <img id="plImg" src="" alt="">
+</div>
 
-    function openLightbox(group, index){
-      currentGroup = group;
-      currentIndex = index;
-      showCurrent();
-      lightbox.classList.add('open');
-    }
-    function showCurrent(){
-      var img = currentGroup[currentIndex];
-      lbImg.src = img.src;
-      lbCap.textContent = img.getAttribute('data-cap') || '';
-    }
-    function closeLightbox(){
-      lightbox.classList.remove('open');
-    }
-    document.querySelectorAll('.thumb-grid').forEach(function(grid){
-      var imgs = Array.prototype.slice.call(grid.querySelectorAll('img'));
-      imgs.forEach(function(img, idx){
-        img.parentElement.addEventListener('click', function(){
-          openLightbox(imgs, idx);
-        });
+<!-- Pano Modal Viewer -->
+<div class="pano-modal" id="panoModal">
+  <div id="panoViewer"></div>
+  <div class="pv-top">
+    <div>
+      <div class="pv-title" id="pvTitle">—</div>
+      <div class="pv-sub" id="pvSub">Drag to look around · scroll to zoom</div>
+    </div>
+    <div class="pv-actions">
+      <button class="pv-btn" id="pvVR">🥽 VR / Fullscreen</button>
+      <button class="pv-btn pv-close" id="pvClose">&times;</button>
+    </div>
+  </div>
+  <div class="pv-nav pv-prev" id="pvPrev">&#10094;</div>
+  <div class="pv-nav pv-next" id="pvNext">&#10095;</div>
+  <div class="pv-dots" id="pvDots"></div>
+  <div class="pv-hint">Drag or swipe to look around in 360°</div>
+</div>
+
+<script>
+(function(){
+  // Carousel arrow scrolling
+  document.querySelectorAll('.carousel-arrow').forEach(function(arrow){
+    arrow.addEventListener('click', function(){
+      var target = arrow.getAttribute('data-target');
+      var group = document.querySelector('.thumb-grid[data-photo-group="' + target + '"]') ||
+                  document.querySelector('.pano-grid[data-album="' + target + '"]');
+      if (!group) return;
+      var amount = group.clientWidth * 0.8;
+      group.scrollBy({ left: arrow.classList.contains('carousel-prev') ? -amount : amount, behavior: 'smooth' });
+    });
+  });
+
+  // Panorama floor tabs (switch which floor's carousel is visible per house)
+  document.querySelectorAll('.pano-floor-tab').forEach(function(tab){
+    tab.addEventListener('click', function(){
+      var house = tab.getAttribute('data-house');
+      var album = tab.getAttribute('data-floor-target');
+      document.querySelectorAll('.pano-floor-tab[data-house="' + house + '"]').forEach(function(t){
+        t.classList.remove('active');
+      });
+      tab.classList.add('active');
+      document.querySelectorAll('.pano-floor-panel[data-house="' + house + '"]').forEach(function(panel){
+        panel.style.display = (panel.getAttribute('data-album-panel') === album) ? 'block' : 'none';
       });
     });
-    lbClose.addEventListener('click', closeLightbox);
-    lightbox.addEventListener('click', function(e){
-      if(e.target === lightbox) closeLightbox();
+  });
+
+  // Photo lightbox (for regular project thumbnails)
+  var photoGroups = {};
+  document.querySelectorAll('.thumb-grid[data-photo-group]').forEach(function(grid){
+    var key = grid.getAttribute('data-photo-group');
+    var imgs = Array.prototype.slice.call(grid.querySelectorAll('img'));
+    photoGroups[key] = imgs.map(function(img){
+      return { src: img.getAttribute('src'), cap: img.getAttribute('data-cap') || img.getAttribute('alt') };
     });
-    lbPrev.addEventListener('click', function(e){
-      e.stopPropagation();
-      currentIndex = (currentIndex - 1 + currentGroup.length) % currentGroup.length;
-      showCurrent();
+    imgs.forEach(function(img, idx){
+      img.parentElement.addEventListener('click', function(){
+        openLightbox(key, idx);
+      });
     });
-    lbNext.addEventListener('click', function(e){
-      e.stopPropagation();
-      currentIndex = (currentIndex + 1) % currentGroup.length;
-      showCurrent();
+  });
+
+  var pl = document.getElementById('photoLightbox');
+  var plImg = document.getElementById('plImg');
+  var plCounter = document.getElementById('plCounter');
+  var plClose = document.getElementById('plClose');
+  var plPrev = document.getElementById('plPrev');
+  var plNext = document.getElementById('plNext');
+  var plGroupKey = null, plIndex = 0;
+
+  function renderPhoto(){
+    var list = photoGroups[plGroupKey];
+    var item = list[plIndex];
+    plImg.src = item.src;
+    plImg.alt = item.cap;
+    plCounter.textContent = (plIndex + 1) + ' / ' + list.length;
+  }
+  function openLightbox(key, idx){
+    plGroupKey = key;
+    plIndex = idx;
+    renderPhoto();
+    pl.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox(){
+    pl.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function showRelative(delta){
+    var list = photoGroups[plGroupKey];
+    plIndex = (plIndex + delta + list.length) % list.length;
+    renderPhoto();
+  }
+  plClose.addEventListener('click', closeLightbox);
+  plPrev.addEventListener('click', function(e){ e.stopPropagation(); showRelative(-1); });
+  plNext.addEventListener('click', function(e){ e.stopPropagation(); showRelative(1); });
+  pl.addEventListener('click', function(e){ if (e.target === pl) closeLightbox(); });
+  document.addEventListener('keydown', function(e){
+    if (!pl.classList.contains('open')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') showRelative(-1);
+    if (e.key === 'ArrowRight') showRelative(1);
+  });
+
+  var albums = {};
+  document.querySelectorAll('.pano-grid').forEach(function(grid){
+    var key = grid.getAttribute('data-album');
+    albums[key] = Array.prototype.slice.call(grid.querySelectorAll('.pano-card')).map(function(card){
+      return { src: card.getAttribute('data-src'), title: card.getAttribute('data-title') };
     });
-    document.addEventListener('keydown', function(e){
-      if(!lightbox.classList.contains('open')) return;
-      if(e.key === 'Escape') closeLightbox();
-      if(e.key === 'ArrowLeft') lbPrev.click();
-      if(e.key === 'ArrowRight') lbNext.click();
+    grid.querySelectorAll('.pano-card').forEach(function(card, idx){
+      card.addEventListener('click', function(){
+        openPano(key, idx);
+      });
     });
-  })();
+  });
+
+  var modal = document.getElementById('panoModal');
+  var pvTitle = document.getElementById('pvTitle');
+  var pvClose = document.getElementById('pvClose');
+  var pvPrev = document.getElementById('pvPrev');
+  var pvNext = document.getElementById('pvNext');
+  var pvVR = document.getElementById('pvVR');
+  var pvDots = document.getElementById('pvDots');
+  var viewerEl = document.getElementById('panoViewer');
+  var currentAlbum = null, currentIndex = 0, viewer = null;
+
+  function renderDots(){
+    pvDots.innerHTML = '';
+    albums[currentAlbum].forEach(function(_, i){
+      var d = document.createElement('div');
+      d.className = 'pv-dot' + (i === currentIndex ? ' active' : '');
+      d.addEventListener('click', function(){ showPano(i); });
+      pvDots.appendChild(d);
+    });
+  }
+
+  function showPano(index){
+    var list = albums[currentAlbum];
+    currentIndex = (index + list.length) % list.length;
+    var item = list[currentIndex];
+    pvTitle.textContent = item.title;
+    if (viewer) { viewer.destroy(); viewer = null; }
+    viewer = pannellum.viewer('panoViewer', {
+      type: 'equirectangular',
+      panorama: item.src,
+      autoLoad: true,
+      compass: false,
+      showZoomCtrl: false,
+      showFullscreenCtrl: false,
+      hfov: 100
+    });
+    renderDots();
+  }
+
+  function openPano(albumKey, index){
+    currentAlbum = albumKey;
+    modal.classList.add('open');
+    showPano(index);
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closePano(){
+    modal.classList.remove('open');
+    if (viewer) { viewer.destroy(); viewer = null; }
+    document.body.style.overflow = '';
+  }
+
+  pvClose.addEventListener('click', closePano);
+  pvPrev.addEventListener('click', function(){ showPano(currentIndex - 1); });
+  pvNext.addEventListener('click', function(){ showPano(currentIndex + 1); });
+
+  pvVR.addEventListener('click', function(){
+    var el = modal;
+    if (!document.fullscreenElement) {
+      (el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen).call(el);
+    } else {
+      (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+    }
+    if (viewer && viewer.toggleVRMode) {
+      try { viewer.toggleVRMode(); } catch(e){}
+    }
+  });
+
+  document.addEventListener('keydown', function(e){
+    if (!modal.classList.contains('open')) return;
+    if (e.key === 'Escape') closePano();
+    if (e.key === 'ArrowLeft') showPano(currentIndex - 1);
+    if (e.key === 'ArrowRight') showPano(currentIndex + 1);
+  });
+})();
+
+(function(){
+  var railLinks = Array.prototype.slice.call(document.querySelectorAll('.side-rail a[data-section]'));
+  if (!railLinks.length) return;
+  var sections = railLinks.map(function(a){
+    return document.getElementById(a.getAttribute('data-section'));
+  });
+  function setActive(){
+    var pos = window.scrollY + window.innerHeight * 0.3;
+    var activeIdx = 0;
+    for (var i = 0; i < sections.length; i++){
+      if (sections[i] && sections[i].offsetTop <= pos) activeIdx = i;
+    }
+    railLinks.forEach(function(a, i){
+      a.classList.toggle('active', i === activeIdx);
+    });
+  }
+  window.addEventListener('scroll', setActive, { passive: true });
+  window.addEventListener('resize', setActive);
+  setActive();
+})();
 </script>
+
 </body>
 </html>
