@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Suriyapakorn Ngamsapsiri — 3D Visualization Artist</title>
+<style>
+  :root{
+    --bg:#0e0e10;
+    --bg-alt:#161618;
+    --card:#1c1c1f;
+    --text:#eef0f2;
+    --muted:#9aa0a6;
+    --accent:#e8734a;
+    --accent-soft:#3a2822;
+    --border:#2a2a2e;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    line-height:1.6;
+  }
+  a{color:var(--accent);text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 24px;}
+
+  header{
+    position:sticky;top:0;z-index:10;
+    background:rgba(14,14,16,0.9);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--border);
+  }
+  nav{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:16px 24px;max-width:1000px;margin:0 auto;
+  }
+  nav .logo{font-weight:700;letter-spacing:1px;font-size:14px;}
+  nav ul{display:flex;gap:24px;list-style:none;}
+  nav ul li a{color:var(--muted);font-size:14px;}
+  nav ul li a:hover{color:var(--text);text-decoration:none;}
+
+  .hero{
+    padding:100px 24px 80px;
+    text-align:center;
+    background:
+      radial-gradient(circle at 20% 20%, var(--accent-soft), transparent 45%),
+      radial-gradient(circle at 80% 30%, #22384a, transparent 40%);
+  }
+  .avatar{
+    width:120px;height:120px;border-radius:50%;
+    margin:0 auto 24px;
+    background:linear-gradient(135deg,var(--accent),#c85a33);
+    display:flex;align-items:center;justify-content:center;
+    font-size:40px;font-weight:700;color:#fff;
+    border:3px solid var(--border);
+  }
+  .hero h1{font-size:2.4rem;letter-spacing:1px;margin-bottom:6px;}
+  .hero .role{color:var(--accent);font-size:1rem;letter-spacing:3px;text-transform:uppercase;margin-bottom:24px;}
+  .hero p.summary{max-width:640px;margin:0 auto 32px;color:var(--muted);font-size:1.05rem;}
+  .hero .cta{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
+  .btn{
+    display:inline-block;padding:12px 26px;border-radius:30px;
+    font-size:14px;letter-spacing:0.5px;font-weight:600;
+  }
+  .btn.primary{background:var(--accent);color:#1a1a1a;}
+  .btn.primary:hover{background:#f08659;text-decoration:none;}
+  .btn.outline{border:1px solid var(--border);color:var(--text);}
+  .btn.outline:hover{border-color:var(--accent);text-decoration:none;}
+
+  section{padding:70px 24px;border-top:1px solid var(--border);}
+  section h2{
+    font-size:1.6rem;margin-bottom:36px;
+    display:flex;align-items:center;gap:12px;
+  }
+  section h2::after{
+    content:"";flex:1;height:1px;background:var(--border);
+  }
+
+  /* Skills */
+  .skill-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:28px;}
+  .skill-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px;}
+  .skill-card h3{font-size:0.85rem;letter-spacing:1px;color:var(--accent);text-transform:uppercase;margin-bottom:14px;}
+  .skill-card ul{list-style:none;color:var(--muted);font-size:0.95rem;}
+  .skill-card ul li{padding:4px 0;}
+
+  /* Experience timeline */
+  .timeline{position:relative;padding-left:28px;border-left:2px solid var(--border);}
+  .job{margin-bottom:44px;position:relative;}
+  .job::before{
+    content:"";position:absolute;left:-35px;top:4px;
+    width:12px;height:12px;border-radius:50%;
+    background:var(--accent);border:3px solid var(--bg);
+  }
+  .job .period{color:var(--accent);font-size:0.85rem;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
+  .job h3{font-size:1.15rem;margin-bottom:10px;}
+  .job ul{color:var(--muted);padding-left:20px;font-size:0.95rem;}
+  .job ul li{margin-bottom:6px;}
+  .job .tag-list{margin-top:10px;color:var(--muted);font-size:0.88rem;}
+  .job .tag-list b{color:var(--text);}
+
+  /* Portfolio */
+  .portfolio-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;}
+  .pf-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;transition:border-color .2s;}
+  .pf-card:hover{border-color:var(--accent);}
+  .pf-card h4{font-size:0.8rem;text-transform:uppercase;letter-spacing:1px;color:var(--accent);margin-bottom:12px;}
+  .pf-card ol,.pf-card p{color:var(--muted);font-size:0.95rem;}
+  .pf-card a{display:block;margin-bottom:6px;word-break:break-word;}
+
+  /* Project gallery */
+  .project-block{margin-bottom:56px;}
+  .project-header{margin-bottom:18px;}
+  .project-header h3{font-size:1.2rem;margin-bottom:4px;}
+  .project-header span{color:var(--muted);font-size:0.85rem;letter-spacing:0.5px;text-transform:uppercase;}
+  .thumb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;}
+  .thumb{
+    position:relative;border-radius:10px;overflow:hidden;
+    border:1px solid var(--border);background:var(--card);
+    cursor:pointer;aspect-ratio:4/3;
+  }
+  .thumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s ease;}
+  .thumb:hover img{transform:scale(1.06);}
+  .thumb .cap{
+    position:absolute;left:0;right:0;bottom:0;
+    padding:8px 10px;font-size:0.78rem;color:#fff;
+    background:linear-gradient(to top, rgba(0,0,0,0.75), transparent);
+  }
+
+  /* Lightbox */
+  .lightbox{
+    display:none;position:fixed;inset:0;z-index:100;
+    background:rgba(8,8,9,0.94);
+    align-items:center;justify-content:center;
+    padding:30px;flex-direction:column;
+  }
+  .lightbox.open{display:flex;}
+  .lightbox img{max-width:90vw;max-height:80vh;border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,0.6);}
+  .lightbox .lb-cap{color:var(--muted);margin-top:14px;font-size:0.9rem;text-align:center;}
+  .lightbox .lb-close{
+    position:absolute;top:20px;right:28px;color:#fff;font-size:28px;
+    cursor:pointer;line-height:1;
+  }
+  .lightbox .lb-nav{
+    position:absolute;top:50%;transform:translateY(-50%);
+    font-size:34px;color:#fff;cursor:pointer;padding:10px 16px;user-select:none;
+    opacity:0.7;
+  }
+  .lightbox .lb-nav:hover{opacity:1;}
+  .lb-prev{left:10px;}
+  .lb-next{right:10px;}
+
+  /* Education / Languages */
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:40px;}
+  .info-block{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;}
+  .info-block h3{font-size:0.85rem;letter-spacing:1px;color:var(--accent);text-transform:uppercase;margin-bottom:14px;}
+  .info-block p{color:var(--muted);font-size:0.95rem;margin-bottom:8px;}
+  .info-block p b{color:var(--text);}
+
+  footer{
+    text-align:center;padding:40px 24px 60px;color:var(--muted);font-size:0.85rem;
+    border-top:1px solid var(--border);
+  }
+
+  @media(max-width:640px){
+    nav ul{gap:14px;}
+    nav ul li a{font-size:12px;}
+    .hero{padding:70px 20px 60px;}
+    .hero h1{font-size:1.8rem;}
+    .two-col{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <div class="logo">S. NGAMSAPSIRI</div>
+    <ul>
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#portfolio">Portfolio</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+</header>
+
+<section class="hero" id="about">
+  <div class="avatar">SN</div>
+  <h1>Suriyapakorn Ngamsapsiri</h1>
+  <div class="role">3D Visualization Artist</div>
+  <p class="summary">
+    3D Visualization Artist with over 10 years of experience in architectural visualization,
+    advertising renders, and 360° virtual tours. Experienced in creating realistic images
+    and real-time walkthrough applications for global brands.
+  </p>
+  <div class="cta">
+    <a class="btn primary" href="#portfolio">View Portfolio</a>
+    <a class="btn outline" href="#contact">Contact Me</a>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="wrap">
+    <h2>Skills</h2>
+    <div class="skill-grid">
+      <div class="skill-card">
+        <h3>Rendering & 3D</h3>
+        <ul>
+          <li>3ds Max / V-Ray / Corona</li>
+          <li>Chaos Vantage</li>
+          <li>Lumion / D5 Render</li>
+          <li>SketchUp / AutoCAD</li>
+          <li>ZBrush</li>
+        </ul>
+      </div>
+      <div class="skill-card">
+        <h3>Real-Time & Post</h3>
+        <ul>
+          <li>Unreal Engine</li>
+          <li>After Effects</li>
+          <li>Premiere Pro</li>
+          <li>Photoshop</li>
+        </ul>
+      </div>
+      <div class="skill-card">
+        <h3>Plugins</h3>
+        <ul>
+          <li>Forest Pack</li>
+          <li>RailClone</li>
+          <li>GrowFX</li>
+          <li>Anima</li>
+          <li>Phoenix FD</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="experience">
+  <div class="wrap">
+    <h2>Experience</h2>
+    <div class="timeline">
+
+      <div class="job">
+        <div class="period">June 2021 — Present</div>
+        <h3>3D Visualization Artist — Moss &amp; Associates Co., Ltd.</h3>
+        <ul>
+          <li>Received project briefs by email and worked closely with the drafting team to revise layouts, elevations, and visual storytelling.</li>
+          <li>Managed multiple rounds of revisions, often dozens per project, until final launch.</li>
+          <li>Tracked updated brand and material codes/catalogs used across projects.</li>
+          <li>Collaborated across departments to keep every project moving forward.</li>
+        </ul>
+        <div class="tag-list">
+          <b>Louis Vuitton Projects</b> — Thailand: Paragon, ICONSIAM, Gaysorn Amarin, Central Chidlom, Floresta (Phuket).
+          China: Sanlitun, Beijing SKP, Suzhou Metro, Chengdu IFS, Hefei Intime Center, Xi'an SKP, Ningbo,
+          Bao'an Airport, Shanghai IFC, Shanghai Plaza 66, Wuhan SKP, Kunming Spring City 66. Other: LV ION Orchard (Singapore).
+        </div>
+      </div>
+
+      <div class="job">
+        <div class="period">2019 — 2021</div>
+        <h3>3D Visualization Artist — Freelance</h3>
+        <ul>
+          <li>Coordinated with marketing teams and design/drafting departments, receiving project information to build 3D models.</li>
+          <li>Applied materials and lighting to produce realistic perspective renders supporting sales goals.</li>
+          <li>Delivered architectural renders and 360° virtual tours for a range of clients.</li>
+          <li>Managed projects end-to-end, from brief to final delivery.</li>
+        </ul>
+      </div>
+
+      <div class="job">
+        <div class="period">May 2011 — 2018</div>
+        <h3>Senior 3D Visualization &amp; Animation — 3DOJ, Bangkok</h3>
+        <ul>
+          <li>Directed the 3D visualization team's workflow to meet client requirements and deadlines.</li>
+          <li>Produced high-quality photorealistic renders, interior and exterior, for real estate projects.</li>
+          <li>Produced walkthrough animations for client presentations.</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="portfolio">
+  <div class="wrap">
+    <h2>Portfolio</h2>
+
+    <!-- OZONE SIGNATURE -->
+    <div class="project-block">
+      <div class="project-header">
+        <h3>OZONE SIGNATURE Hotel &amp; Condo</h3>
+        <span>Architectural Visualization — Exterior, Interior &amp; Floor Plan</span>
+      </div>
+      <div class="thumb-grid" data-gallery="ozone">
+        <div class="thumb"><img src="images/p01_0.jpg" alt="Front Facade & Entrance" data-cap="Front Facade & Entrance"><div class="cap">Front Facade & Entrance</div></div>
+        <div class="thumb"><img src="images/p02_0.jpg" alt="Hotel Pool Area" data-cap="Hotel Pool Area"><div class="cap">Hotel Pool Area</div></div>
+        <div class="thumb"><img src="images/p03_0.jpg" alt="Bird's-Eye View – Full Development" data-cap="Bird's-Eye View – Full Development"><div class="cap">Bird's-Eye View</div></div>
+        <div class="thumb"><img src="images/p04_0.jpg" alt="Condo Pool & Landscape" data-cap="Condo Pool & Landscape"><div class="cap">Condo Pool & Landscape</div></div>
+        <div class="thumb"><img src="images/p05_0.jpg" alt="Interior – Fitness Gym" data-cap="Interior – Fitness Gym"><div class="cap">Fitness Gym</div></div>
+        <div class="thumb"><img src="images/p06_0.jpg" alt="Interior – Lobby" data-cap="Interior – Lobby"><div class="cap">Lobby</div></div>
+        <div class="thumb"><img src="images/p07_0.jpg" alt="Interior – Restaurant" data-cap="Interior – Restaurant"><div class="cap">Restaurant</div></div>
+        <div class="thumb"><img src="images/p08_0.jpg" alt="Interior – Deluxe Room" data-cap="Interior – Deluxe Room"><div class="cap">Deluxe Room</div></div>
+        <div class="thumb"><img src="images/p09_0.jpg" alt="Interior – Deluxe Room (Alt. View)" data-cap="Interior – Deluxe Room (Alt. View)"><div class="cap">Deluxe Room (Alt.)</div></div>
+        <div class="thumb"><img src="images/p10_0.jpg" alt="Interior – President Suite Bedroom" data-cap="Interior – President Suite Bedroom"><div class="cap">President Suite Bedroom</div></div>
+        <div class="thumb"><img src="images/p11_0.jpg" alt="President Suite – Floor Plan Top View" data-cap="President Suite – Floor Plan Top View"><div class="cap">Floor Plan Top View</div></div>
+      </div>
+    </div>
+
+    <!-- QAV Wellbeing -->
+    <div class="project-block">
+      <div class="project-header">
+        <h3>QAV Wellbeing</h3>
+        <span>Architectural Visualization — Exterior &amp; Interior</span>
+      </div>
+      <div class="thumb-grid" data-gallery="qavwell">
+        <div class="thumb"><img src="images/p12_0.jpg" alt="SIAMSPORT Facility – Front View" data-cap="SIAMSPORT Facility – Front View"><div class="cap">SIAMSPORT Facility</div></div>
+        <div class="thumb"><img src="images/p13_0.jpg" alt="QAV Stay – Exterior" data-cap="QAV Stay – Exterior"><div class="cap">QAV Stay – Exterior</div></div>
+        <div class="thumb"><img src="images/p14_0.jpg" alt="Bird's-Eye View – Full Development" data-cap="Bird's-Eye View – Full Development"><div class="cap">Bird's-Eye View</div></div>
+        <div class="thumb"><img src="images/p15_0.jpg" alt="Main Entrance & Clubhouse" data-cap="Main Entrance & Clubhouse"><div class="cap">Main Entrance & Clubhouse</div></div>
+        <div class="thumb"><img src="images/p16_0.jpg" alt="Interior – Living & Dining Room" data-cap="Interior – Living & Dining Room"><div class="cap">Living & Dining Room</div></div>
+        <div class="thumb"><img src="images/p17_0.jpg" alt="Interior – Bedroom (1st Floor)" data-cap="Interior – Bedroom (1st Floor)"><div class="cap">Bedroom (1st Floor)</div></div>
+      </div>
+    </div>
+
+    <!-- QAV House -->
+    <div class="project-block">
+      <div class="project-header">
+        <h3>QAV House</h3>
+        <span>Architectural Visualization — Villa Type B &amp; C</span>
+      </div>
+      <div class="thumb-grid" data-gallery="qavhouse">
+        <div class="thumb"><img src="images/p18_0.jpg" alt="Bird's-Eye View – Full Development" data-cap="Bird's-Eye View – Full Development"><div class="cap">Bird's-Eye View</div></div>
+        <div class="thumb"><img src="images/p19_0.jpg" alt="Type B – Exterior Pool View" data-cap="Type B – Exterior Pool View"><div class="cap">Type B – Pool View</div></div>
+        <div class="thumb"><img src="images/p20_0.jpg" alt="Type C – Exterior Pool View" data-cap="Type C – Exterior Pool View"><div class="cap">Type C – Pool View</div></div>
+        <div class="thumb"><img src="images/p21_0.jpg" alt="Type B – Living Room" data-cap="Type B – Living Room"><div class="cap">Type B – Living Room</div></div>
+        <div class="thumb"><img src="images/p22_0.jpg" alt="Type B – Bedroom" data-cap="Type B – Bedroom"><div class="cap">Type B – Bedroom</div></div>
+        <div class="thumb"><img src="images/p23_0.jpg" alt="Type B – Bathroom" data-cap="Type B – Bathroom"><div class="cap">Type B – Bathroom</div></div>
+        <div class="thumb"><img src="images/p24_0.jpg" alt="Type C – Living Room" data-cap="Type C – Living Room"><div class="cap">Type C – Living Room</div></div>
+        <div class="thumb"><img src="images/p25_0.jpg" alt="Type C – Living Room (Alt. View)" data-cap="Type C – Living Room (Alt. View)"><div class="cap">Type C – Living Room (Alt.)</div></div>
+        <div class="thumb"><img src="images/p26_0.jpg" alt="Type C – Bedroom" data-cap="Type C – Bedroom"><div class="cap">Type C – Bedroom</div></div>
+        <div class="thumb"><img src="images/p27_0.jpg" alt="Type C – Bathroom" data-cap="Type C – Bathroom"><div class="cap">Type C – Bathroom</div></div>
+      </div>
+    </div>
+
+    <!-- Louis Vuitton Sanlitun -->
+    <div class="project-block">
+      <div class="project-header">
+        <h3>Louis Vuitton Sanlitun — Beijing, China</h3>
+        <span>Retail Interior Visualization — L1 / L2 / L3 / BF</span>
+      </div>
+      <div class="thumb-grid" data-gallery="lv">
+        <div class="thumb"><img src="images/p28_0.jpg" alt="L1 – Interior View 1" data-cap="L1 – Interior View 1"><div class="cap">L1 – Interior View 1</div></div>
+        <div class="thumb"><img src="images/p28_1.jpg" alt="L1 – Interior View 2" data-cap="L1 – Interior View 2"><div class="cap">L1 – Interior View 2</div></div>
+        <div class="thumb"><img src="images/p28_2.jpg" alt="L1 – Interior View 3" data-cap="L1 – Interior View 3"><div class="cap">L1 – Interior View 3</div></div>
+        <div class="thumb"><img src="images/p28_3.jpg" alt="L1 – Interior View 5" data-cap="L1 – Interior View 5"><div class="cap">L1 – Interior View 5</div></div>
+        <div class="thumb"><img src="images/p29_0.jpg" alt="L2 – Interior View 1" data-cap="L2 – Interior View 1"><div class="cap">L2 – Interior View 1</div></div>
+        <div class="thumb"><img src="images/p29_1.jpg" alt="L2 – Interior View 2" data-cap="L2 – Interior View 2"><div class="cap">L2 – Interior View 2</div></div>
+        <div class="thumb"><img src="images/p29_2.jpg" alt="L2 – Interior View 3" data-cap="L2 – Interior View 3"><div class="cap">L2 – Interior View 3</div></div>
+        <div class="thumb"><img src="images/p29_3.jpg" alt="L2 – Interior View 6" data-cap="L2 – Interior View 6"><div class="cap">L2 – Interior View 6</div></div>
+        <div class="thumb"><img src="images/p30_0.jpg" alt="L2 – Interior View 7" data-cap="L2 – Interior View 7"><div class="cap">L2 – Interior View 7</div></div>
+        <div class="thumb"><img src="images/p30_1.jpg" alt="L3 – Interior View" data-cap="L3 – Interior View"><div class="cap">L3 – Interior View</div></div>
+        <div class="thumb"><img src="images/p30_2.jpg" alt="BF – Interior View" data-cap="BF – Interior View"><div class="cap">BF – Interior View</div></div>
+      </div>
+    </div>
+
+    <div class="project-block">
+      <div class="project-header">
+        <h3>Animation &amp; 360° Walkthroughs</h3>
+        <span>Video &amp; Panorama Links</span>
+      </div>
+      <div class="portfolio-grid">
+        <div class="pf-card">
+          <h4>Animation</h4>
+          <a href="https://youtube.com/playlist?list=PLOrudW-30HZI" target="_blank" rel="noopener">YouTube Playlist →</a>
+        </div>
+        <div class="pf-card">
+          <h4>360° Panorama Walkthrough</h4>
+          <a href="https://facebook.com/share/p/17VaSQ2DAz" target="_blank" rel="noopener">Pattaya PYCHE L — FL1</a>
+          <a href="https://facebook.com/share/p/19k7T2oJWU" target="_blank" rel="noopener">Pattaya PYCHE L — FL2</a>
+          <a href="https://facebook.com/share/p/1FxmGLHgrs" target="_blank" rel="noopener">Rama9 XL — FL1</a>
+          <a href="https://facebook.com/share/p/1ERm24xpFe" target="_blank" rel="noopener">Rama9 XL — FL2</a>
+          <a href="https://facebook.com/share/p/1BnaRZ6L31" target="_blank" rel="noopener">Rama9 XL — FL3</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="lightbox" id="lightbox">
+  <span class="lb-close" id="lbClose">&times;</span>
+  <span class="lb-nav lb-prev" id="lbPrev">&#10094;</span>
+  <span class="lb-nav lb-next" id="lbNext">&#10095;</span>
+  <img id="lbImg" src="" alt="">
+  <div class="lb-cap" id="lbCap"></div>
+</div>
+
+<section id="education">
+  <div class="wrap">
+    <h2>Education &amp; Languages</h2>
+    <div class="two-col">
+      <div class="info-block">
+        <h3>Education</h3>
+        <p><b>Bachelor's Degree</b> — Electrical Power Engineering</p>
+        <p><b>Onone Animation Course</b> — Riff Studio</p>
+        <p><b>ZBrush Course</b></p>
+      </div>
+      <div class="info-block">
+        <h3>Languages</h3>
+        <p><b>Thai</b> — Native</p>
+        <p><b>English</b> — Reading/Writing: Intermediate</p>
+        <p>Speaking/Listening: Upper-Basic</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="wrap">
+    <h2>Contact</h2>
+    <div class="info-block">
+      <p><b>Phone / WhatsApp:</b> +66 85-086-8179</p>
+      <p><b>Email:</b> <a href="mailto:gonosis@gmail.com">gonosis@gmail.com</a></p>
+      <p><b>Location:</b> Samut Prakan, Thailand</p>
+      <p style="margin-top:14px;">References available upon request.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  © 2026 Suriyapakorn Ngamsapsiri — Built with GitHub Pages
+</footer>
+
+<script>
+  (function(){
+    var lightbox = document.getElementById('lightbox');
+    var lbImg = document.getElementById('lbImg');
+    var lbCap = document.getElementById('lbCap');
+    var lbClose = document.getElementById('lbClose');
+    var lbPrev = document.getElementById('lbPrev');
+    var lbNext = document.getElementById('lbNext');
+    var currentGroup = [];
+    var currentIndex = 0;
+
+    function openLightbox(group, index){
+      currentGroup = group;
+      currentIndex = index;
+      showCurrent();
+      lightbox.classList.add('open');
+    }
+    function showCurrent(){
+      var img = currentGroup[currentIndex];
+      lbImg.src = img.src;
+      lbCap.textContent = img.getAttribute('data-cap') || '';
+    }
+    function closeLightbox(){
+      lightbox.classList.remove('open');
+    }
+    document.querySelectorAll('.thumb-grid').forEach(function(grid){
+      var imgs = Array.prototype.slice.call(grid.querySelectorAll('img'));
+      imgs.forEach(function(img, idx){
+        img.parentElement.addEventListener('click', function(){
+          openLightbox(imgs, idx);
+        });
+      });
+    });
+    lbClose.addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', function(e){
+      if(e.target === lightbox) closeLightbox();
+    });
+    lbPrev.addEventListener('click', function(e){
+      e.stopPropagation();
+      currentIndex = (currentIndex - 1 + currentGroup.length) % currentGroup.length;
+      showCurrent();
+    });
+    lbNext.addEventListener('click', function(e){
+      e.stopPropagation();
+      currentIndex = (currentIndex + 1) % currentGroup.length;
+      showCurrent();
+    });
+    document.addEventListener('keydown', function(e){
+      if(!lightbox.classList.contains('open')) return;
+      if(e.key === 'Escape') closeLightbox();
+      if(e.key === 'ArrowLeft') lbPrev.click();
+      if(e.key === 'ArrowRight') lbNext.click();
+    });
+  })();
+</script>
+</body>
+</html>
