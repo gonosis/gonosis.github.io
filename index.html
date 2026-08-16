@@ -183,6 +183,29 @@
   .yt-wrap iframe{width:100%;aspect-ratio:16/9;border:0;display:block;}
   .yt-wrap.yt-center{max-width:760px;margin:0 auto;}
 
+  .video-thumb{
+    position:relative;border-radius:8px;overflow:hidden;
+    border:1px solid var(--border);background:#000;
+    cursor:pointer;flex:0 0 360px;aspect-ratio:16/9;scroll-snap-align:start;
+  }
+  .video-thumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s ease;}
+  .video-thumb:hover img{transform:scale(1.06);}
+  .video-thumb iframe{width:100%;height:100%;border:0;display:block;}
+  .video-thumb .play-btn{
+    position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+    width:56px;height:56px;border-radius:50%;background:rgba(0,0,0,0.55);
+    display:flex;align-items:center;justify-content:center;pointer-events:none;
+  }
+  .video-thumb .play-btn::after{
+    content:"";border-style:solid;border-width:10px 0 10px 16px;
+    border-color:transparent transparent transparent #fff;margin-left:4px;
+  }
+  .video-thumb .cap{
+    position:absolute;left:0;right:0;bottom:0;
+    padding:10px 12px;font-size:0.78rem;color:#fff;
+    background:linear-gradient(to top, rgba(0,0,0,0.75), transparent);
+  }
+
   /* 360 gallery cards */
   .pano-grid{
     display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;
@@ -359,9 +382,56 @@
       <div class="project-header" style="text-align:center;">
         <h3>Animation Reel</h3>
       </div>
-      <div class="yt-wrap yt-center">
-        <iframe src="https://www.youtube.com/embed/videoseries?list=PLOrudW-30HZI&amp;index=1"
-          title="Animation Playlist" allowfullscreen loading="lazy"></iframe>
+      <div class="carousel-wrap">
+        <div class="carousel-arrow carousel-prev" data-target="animation-reel">&#10094;</div>
+        <div class="thumb-grid" data-video-group="animation-reel">
+          <div class="video-thumb" data-yt-id="1WZNEJNBvYo">
+            <img src="https://img.youtube.com/vi/1WZNEJNBvYo/hqdefault.jpg" alt="QAV Animation" loading="lazy">
+            <div class="play-btn"></div>
+            <div class="cap">QAV Animation</div>
+          </div>
+          <div class="video-thumb" data-yt-id="pkYfoA3shSo">
+            <img src="https://img.youtube.com/vi/pkYfoA3shSo/hqdefault.jpg" alt="QAV Wellbeing Animation" loading="lazy">
+            <div class="play-btn"></div>
+            <div class="cap">QAV Wellbeing Animation</div>
+          </div>
+          <div class="video-thumb" data-yt-id="yG-txpxAgLM">
+            <img src="https://img.youtube.com/vi/yG-txpxAgLM/hqdefault.jpg" alt="Ozone Signature Animation" loading="lazy">
+            <div class="play-btn"></div>
+            <div class="cap">Ozone Signature Animation</div>
+          </div>
+          <div class="video-thumb" data-yt-id="9pcOSBD1IC8">
+            <img src="https://img.youtube.com/vi/9pcOSBD1IC8/hqdefault.jpg" alt="Ri-Ne Animation" loading="lazy">
+            <div class="play-btn"></div>
+            <div class="cap">Ri-Ne Animation</div>
+          </div>
+          <div class="video-thumb" data-yt-id="aAHg-LLJvs4">
+            <img src="https://img.youtube.com/vi/aAHg-LLJvs4/hqdefault.jpg" alt="Sou&amp; Animation" loading="lazy">
+            <div class="play-btn"></div>
+            <div class="cap">Sou&amp; Animation</div>
+          </div>
+          <div class="video-thumb" data-yt-id="eFrzAj_0qOY">
+            <img src="https://img.youtube.com/vi/eFrzAj_0qOY/hqdefault.jpg" alt="LH Mantana Animation" loading="lazy">
+            <div class="play-btn"></div>
+            <div class="cap">LH Mantana Animation</div>
+          </div>
+          <div class="video-thumb" data-yt-id="pbHbB0tB31w">
+            <img src="https://img.youtube.com/vi/pbHbB0tB31w/hqdefault.jpg" alt="Mono Japanese Pool Villa Animation" loading="lazy">
+            <div class="play-btn"></div>
+            <div class="cap">Mono Japanese Pool Villa Animation</div>
+          </div>
+          <div class="video-thumb" data-yt-id="9EDaklnuGig">
+            <img src="https://img.youtube.com/vi/9EDaklnuGig/hqdefault.jpg" alt="The Ozone Campus Villa Type A &amp; B" loading="lazy">
+            <div class="play-btn"></div>
+            <div class="cap">The Ozone Campus Villa Type A &amp; B</div>
+          </div>
+          <div class="video-thumb" data-yt-id="QhxaqkpGZrA">
+            <img src="https://img.youtube.com/vi/QhxaqkpGZrA/hqdefault.jpg" alt="KK10 Animation" loading="lazy">
+            <div class="play-btn"></div>
+            <div class="cap">KK10 Animation</div>
+          </div>
+        </div>
+        <div class="carousel-arrow carousel-next" data-target="animation-reel">&#10095;</div>
       </div>
     </div>
 
@@ -2359,10 +2429,22 @@
     arrow.addEventListener('click', function(){
       var target = arrow.getAttribute('data-target');
       var group = document.querySelector('.thumb-grid[data-photo-group="' + target + '"]') ||
-                  document.querySelector('.pano-grid[data-album="' + target + '"]');
+                  document.querySelector('.pano-grid[data-album="' + target + '"]') ||
+                  document.querySelector('.thumb-grid[data-video-group="' + target + '"]');
       if (!group) return;
       var amount = group.clientWidth * 0.8;
       group.scrollBy({ left: arrow.classList.contains('carousel-prev') ? -amount : amount, behavior: 'smooth' });
+    });
+  });
+
+  // Animation reel video thumbs — click to play inline
+  document.querySelectorAll('.video-thumb').forEach(function(card){
+    card.addEventListener('click', function(){
+      var id = card.getAttribute('data-yt-id');
+      if (!id) return;
+      card.innerHTML = '<iframe src="https://www.youtube.com/embed/' + id + '?autoplay=1" ' +
+        'title="' + (card.querySelector('img') ? card.querySelector('img').alt : 'Animation') + '" ' +
+        'allow="autoplay; encrypted-media" allowfullscreen></iframe>';
     });
   });
 
