@@ -75,7 +75,7 @@
   @media(max-width:1180px){ .side-rail{display:none;} }
 
   .hero{
-    padding:120px 28px 100px;
+    padding:120px 28px 56px;
     text-align:center;
     position:relative;
     overflow:hidden;
@@ -109,6 +109,7 @@
   .btn.outline:hover{border-color:var(--accent);text-decoration:none;background:var(--card);}
 
   section{padding:80px 28px;}
+  #portfolio{padding-top:40px;}
   section.alt{background:var(--bg-alt);}
   .section-head{margin-bottom:44px;max-width:600px;}
   .section-head .kicker{color:var(--accent-dark);font-size:0.75rem;letter-spacing:2.5px;text-transform:uppercase;font-weight:700;margin-bottom:10px;}
@@ -308,6 +309,27 @@
   .photo-lightbox .pl-nav:hover{background:rgba(255,255,255,0.22);}
   .pl-prev{left:24px;}
   .pl-next{right:24px;}
+
+  /* Video lightbox */
+  .video-lightbox{
+    display:none;position:fixed;inset:0;z-index:150;
+    background:rgba(15,12,10,0.94);
+    align-items:center;justify-content:center;padding:40px;
+  }
+  .video-lightbox.open{display:flex;}
+  .video-lightbox .vl-frame{
+    width:min(90vw,1100px);aspect-ratio:16/9;
+    box-shadow:0 20px 60px rgba(0,0,0,0.5);border-radius:6px;overflow:hidden;
+    background:#000;
+  }
+  .video-lightbox .vl-frame iframe{width:100%;height:100%;border:0;display:block;}
+  .video-lightbox .pl-cap{color:#e7e0d6;margin-top:16px;font-size:0.9rem;text-align:center;}
+  .video-lightbox .pl-close{
+    position:absolute;top:22px;right:30px;color:#fff;font-size:30px;
+    cursor:pointer;line-height:1;background:rgba(255,255,255,0.1);
+    width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  }
+  .video-lightbox .pl-close:hover{background:rgba(255,255,255,0.2);}
   .pl-counter{
     position:absolute;top:28px;left:30px;color:#fff;font-size:0.8rem;
     background:rgba(255,255,255,0.1);padding:5px 12px;border-radius:14px;
@@ -2403,6 +2425,12 @@
   <img id="plImg" src="" alt="">
 </div>
 
+<!-- Video Lightbox -->
+<div class="video-lightbox" id="videoLightbox">
+  <div class="pl-close" id="vlClose">&times;</div>
+  <div class="vl-frame" id="vlFrame"></div>
+</div>
+
 <!-- Pano Modal Viewer -->
 <div class="pano-modal" id="panoModal">
   <div id="panoViewer"></div>
@@ -2437,15 +2465,38 @@
     });
   });
 
-  // Animation reel video thumbs — click to play inline
+  // Animation reel video thumbs — click to open large centered popup
+  var videoLightbox = document.getElementById('videoLightbox');
+  var vlFrame = document.getElementById('vlFrame');
+  var vlClose = document.getElementById('vlClose');
+
+  function openVideoLightbox(id, title){
+    vlFrame.innerHTML = '<iframe src="https://www.youtube.com/embed/' + id + '?autoplay=1" ' +
+      'title="' + (title || 'Animation') + '" ' +
+      'allow="autoplay; encrypted-media" allowfullscreen></iframe>';
+    videoLightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeVideoLightbox(){
+    videoLightbox.classList.remove('open');
+    vlFrame.innerHTML = '';
+    document.body.style.overflow = '';
+  }
+
   document.querySelectorAll('.video-thumb').forEach(function(card){
     card.addEventListener('click', function(){
       var id = card.getAttribute('data-yt-id');
       if (!id) return;
-      card.innerHTML = '<iframe src="https://www.youtube.com/embed/' + id + '?autoplay=1" ' +
-        'title="' + (card.querySelector('img') ? card.querySelector('img').alt : 'Animation') + '" ' +
-        'allow="autoplay; encrypted-media" allowfullscreen></iframe>';
+      var img = card.querySelector('img');
+      openVideoLightbox(id, img ? img.alt : 'Animation');
     });
+  });
+  vlClose.addEventListener('click', closeVideoLightbox);
+  videoLightbox.addEventListener('click', function(e){
+    if (e.target === videoLightbox) closeVideoLightbox();
+  });
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape' && videoLightbox.classList.contains('open')) closeVideoLightbox();
   });
 
   // Panorama floor tabs (switch which floor's carousel is visible per house)
